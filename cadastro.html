@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela de Cadastro - MindEasy</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #a331f5, #9b59b6);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    
+    .container-box {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      display: flex;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .left-panel {
+      background: #6a0dad;
+      color: #fff;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .left-panel h2 {
+      font-weight: bold;
+    }
+
+    .left-panel button {
+      border: 2px solid #fff;
+      background: transparent;
+      color: #fff;
+      border-radius: 30px;
+      padding: 10px 30px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .left-panel button:hover {
+      background: #fff;
+      color: #6a0dad;
+    }
+
+    .right-panel {
+      flex: 2;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-control {
+      margin-bottom: 15px;
+      border-radius: 10px;
+    }
+
+    .btn-purple {
+      background: #6a0dad;
+      color: #fff;
+      border-radius: 30px;
+      padding: 10px;
+      font-weight: bold;
+      border: none;
+      transition: background 0.3s;
+    }
+
+    .btn-purple:hover {
+      background: #5b0c9b;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .social-icons i {
+      font-size: 24px;
+      margin: 0 10px;
+      color: #6a0dad;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .social-icons i:hover {
+      transform: scale(1.2);
+      color: #5b0c9b;
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+  <div class="container-box">
+    <!-- Painel Esquerdo -->
+    <div class="left-panel text-center">
+      <h2>Bem-vindo de volta!</h2>
+      <p>Para se manter conectado, faça login com suas informações pessoais</p>
+      <button id="btnLogin">Login Terapeuta</button>
+    </div>
+
+    <!-- Painel Direito -->
+    <div class="right-panel">
+      <h3 class="text-center mb-4" id="formTitle">Criar Conta Terapeuta</h3>
+      
+      <div class="social-icons">
+        <i class="fab fa-facebook"></i>
+        <i class="fab fa-google"></i>
+        <i class="fab fa-linkedin"></i>
+      </div>
+
+      <form id="formCadastro">
+        <input type="text" class="form-control" placeholder="Nome">
+        <input type="text" class="form-control" placeholder="Especialidade">
+        <input type="text" class="form-control" placeholder="CRM/Registro">
+        <input type="email" class="form-control" placeholder="Email">
+        <input type="number" class="form-control" placeholder="Telefone">
+        <input type="password" class="form-control" placeholder="Senha">
+        <button type="submit" class="btn btn-purple w-100">Cadastrar</button>
+      </form>
+
+      <form id="formLogin" style="display: none;">
+        <input type="email" class="form-control" placeholder="Email">
+        <input type="password" class="form-control" placeholder="Senha">
+        <button type="submit" class="btn btn-purple w-100">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const btnLogin = document.getElementById("btnLogin");
+    const formCadastro = document.getElementById("formCadastro");
+    const formLogin = document.getElementById("formLogin");
+    const formTitle = document.getElementById("formTitle");
+
+    btnLogin.addEventListener("click", () => {
+      if(formCadastro.style.display !== "none"){
+        formCadastro.style.display = "none";
+        formLogin.style.display = "block";
+        formTitle.innerText = "Login Terapeuta";
+        btnLogin.innerText = "Criar Conta Terapeuta";
+      } else {
+        formCadastro.style.display = "block";
+        formLogin.style.display = "none";
+        formTitle.innerText = "Criar Conta Terapeuta";
+        btnLogin.innerText = "Login Terapeuta";
+      }
+    });
+  </script>
+
+</body>
+</html>
