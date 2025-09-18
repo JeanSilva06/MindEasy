@@ -10,105 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../static/cadastro.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to right, #5FB6D9, #94D7F2);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container-box {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-      display: flex;
-      max-width: 900px;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .left-panel {
-      background: #2685BF;
-      color: #fff;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
-
-    .left-panel h2 {
-      font-weight: bold;
-    }
-
-    .left-panel button {
-      border: 2px solid #fff;
-      background: transparent;
-      color: #fff;
-      border-radius: 30px;
-      padding: 10px 30px;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .left-panel button:hover {
-      background: #fff;
-      color: #2685BF;
-    }
-
-    .right-panel {
-      flex: 2;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .form-control {
-      margin-bottom: 15px;
-      border-radius: 10px;
-    }
-
-    .btn-purple {
-      background: #2685BF;
-      color: #fff;
-      border-radius: 30px;
-      padding: 10px;
-      font-weight: bold;
-      border: none;
-      transition: background 0.3s;
-    }
-
-    .btn-purple:hover {
-      background: #2685BF;
-    }
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .social-icons i {
-      font-size: 24px;
-      margin: 0 10px;
-      color: #6a0dad;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .social-icons i:hover {
-      transform: scale(1.2);
-      color: #5b0c9b;
-    }
-  </style>
 </head>
 
 <body>
@@ -124,12 +28,6 @@
     <div class="right-panel">
       <h3 class="text-center mb-4" id="formTitle">Criar Conta Terapeuta</h3>
 
-      <div class="social-icons">
-        <i class="fab fa-facebook"></i>
-        <i class="fab fa-google"></i>
-        <i class="fab fa-linkedin"></i>
-      </div>
-
       <!-- FORMULÁRIO DE CADASTRO -->
       <form id="formCadastro">
         <input type="text" id="nome" class="form-control" placeholder="Nome" required>
@@ -144,14 +42,14 @@
         <input type="email" id="emailCadastro" class="form-control" placeholder="Email" required>
         <input type="tel" id="telefone" class="form-control" placeholder="Telefone" required>
         <input type="password" id="senhaCadastro" class="form-control" placeholder="Senha" required>
-        <button type="submit" class="btn btn-purple w-100">Cadastrar</button>
+        <button type="submit" class="btn btn-blue w-100">Cadastrar</button>
       </form>
 
       <!-- FORMULÁRIO DE LOGIN -->
       <form id="formLogin" style="display: none;">
         <input type="email" id="emailLogin" class="form-control" placeholder="Email" required>
         <input type="password" id="senhaLogin" class="form-control" placeholder="Senha" required>
-        <button type="submit" class="btn btn-purple w-100">Entrar</button>
+        <button type="submit" class="btn btn-blue w-100">Entrar</button>
       </form>
     </div>
   </div>
