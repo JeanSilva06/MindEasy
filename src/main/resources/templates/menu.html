@@ -5,164 +5,163 @@
   <title>Menu</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
   <style>
     /* =====================
-   BASE
-===================== */
-body {
-  margin: 20;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #eaf4fc, #ffffff);
-  color: #000000;
-  padding-top: 50px; /* espaço para navbar fixa */
-}
+       BASE
+    ===================== */
+    body {
+      margin: 20;
+      font-family: Arial, sans-serif;
+      /*background: linear-gradient(to bottom, #eaf4fc, #ffffff);*/
+      color: #000000;
+      padding-top: 50px; /* espaço para navbar fixa */
+    }
 
-/* Navbar customizada igual ao menu */
-.navbar {
-  background: linear-gradient(to right, #4b00e0, #8e2de2); /* degrade roxo */
-  padding: 15px;
-}
+    /* =====================
+       NAVBAR
+    ===================== */
+    .navbar {
+      background: linear-gradient(to right, #4b00e0, #8e2de2);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
 
-.navbar-brand {
-  font-weight: bold;
-  color: #fff !important;
-}
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+      cursor: pointer;
+    }
 
-.navbar-nav .nav-link {
-  color: #fff !important;
-  margin-left: 15px;
-}
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      margin-left: 15px;
+    }
 
-.navbar-nav .nav-link:hover {
-  text-decoration: underline;
-}
+    .navbar-nav .nav-link:hover {
+      text-decoration: underline;
+    }
 
-.navbar-nav .nav-link.text-danger {
-  color: #ff4d4d !important;
-}
+    .navbar-nav .nav-link.text-danger {
+      color: #ff4d4d !important;
+    }
 
+    /* =====================
+       SIDEBAR
+    ===================== */
+    .sidebar {
+      height: 100%;
+      width: 85px;
+      position: fixed;
+      z-index: 1100;
+      top: 0;
+      left: -85px; /* escondida por padrão */
+      background: linear-gradient(to bottom, #4b00e0, #8e2de2);
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      transition: left 0.3s ease;
+    }
 
+    .sidebar.show {
+      left: 0; /* aparece */
+    }
 
+    .sidebar a {
+      text-decoration: none;
+      font-size: 22px;
+      color: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
 
-/* =====================
-   NAVBAR
-===================== */
-.navbar {
-  background-color: #1d20ce;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.nav {
-  background-color: #090df5;
-  padding: 15px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-.bg-mind {
-  background: linear-gradient(to right, #4b00e0, #8e2de2);
-}
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
 
-main {
-  margin-top: 80px; /* para não ficar por cima do conteúdo */
-}
+    /* =====================
+       CONTEÚDO
+    ===================== */
+    #main-content {
+      padding: 20px;
+      margin-top: 80px; /* espaço da navbar */
+    }
 
-.navbar .brand {
-  color: #fff;
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: none;
-}
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
 
-.navbar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 20px;
-}
+    /* =====================
+       MENU (CARDS)
+    ===================== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      justify-items: center;
+      margin-bottom: 50px;
+    }
 
-.navbar ul li a {
-  color: #fff;
-  text-decoration: none;
-  transition: 0.3s;
-  font-weight: 500;
-}
+    .card {
+      background: #fff;
+      padding: 40px 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      text-align: center;
+      width: 180px;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
 
-.navbar ul li a:hover {
-  color: #03a1fd;
-}
+    .card:hover {
+      transform: translateY(-5px);
+    }
 
-/* =====================
-   CONTAINERS
-===================== */
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  text-align: center;
-}
+    .card i {
+      font-size: 50px;
+      color: #1d20ce;
+      margin-bottom: 15px;
+    }
 
-/* =====================
-   MENU (CARDS)
-===================== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  justify-items: center;
-  margin-bottom: 50px;
-}
-
-.card {
-  background: #fff;
-  padding: 40px 20px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  text-align: center;
-  width: 180px;
-  transition: transform 0.2s;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card i {
-  font-size: 50px;
-  color: #1d20ce;
-  margin-bottom: 15px;
-}
-
-.card p {
-  margin: 0;
-  color: #1d20ce;
-  font-weight: 500;
-}
-
-.card-login {
-  max-width: 500px;   /* largura máxima */
-  width: 500px;       /* largura fixa */
-  min-height: 450px;  /* altura mínima */
-}
-
-
+    .card p {
+      margin: 0;
+      color: #1d20ce;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
-  <!-- Navbar responsiva -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-mind shadow-sm fixed-top">
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <a href="agenda.html" title="Agendamento"><i class="fa-regular fa-calendar"></i></a>
+    <a href="terapeuta-chat.html" title="Chat"><i class="fa-regular fa-comment"></i></a>
+    <a href="perfil-servicos.html" title="Avaliação"><i class="fa-regular fa-star"></i></a>
+    <a href="agenda.html" title="Remarcar"><i class="fa-regular fa-calendar-check"></i></a>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
     <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="menu.html">MindEasy</a>
+      <a class="navbar-brand fw-bold" href="#" id="brand">MindEasy</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -181,36 +180,28 @@ main {
   </nav>
 
   <!-- Conteúdo -->
-  <div class="container" style="margin-top: 30px;">
-    <div class="grid">
-      <div class="card" onclick="location.href='agenda.html'">
-        <i class="fa-regular fa-calendar"></i>
+  <div id="main-content">
+    <div class="container">
         <p>Agendamento</p>
-      </div>
-      <div class="card" onclick="location.href='terapeuta-chat.html'">
-        <i class="fa-regular fa-comment"></i>
-        <p>Chat</p>
-      </div>
-      <div class="card" onclick="location.href='perfil-servicos.html'">
-        <i class="fa-regular fa-star"></i>
-        <p>Avaliação do profissional</p>
-      </div>
-      <div class="card" onclick="location.href='agenda.html'">
-        <i class="fa-regular fa-calendar-check"></i>
-        <p>Remarcar consulta</p>
-      </div>
     </div>
 
-    <div class="especialista">
-      <p>Especialista que você olhou.</p>
-      <div class="perfil">
-        <img src="https://via.placeholder.com/50" alt="Foto do especialista">
-        <p>Dr. Lucas Mendes</p>
-      </div>
-    </div>
-  </div>
+  
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const brand = document.getElementById("brand");
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    brand.addEventListener("mouseenter", () => {
+      sidebar.classList.add("show");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!sidebar.contains(event.target) && event.target !== brand) {
+        sidebar.classList.remove("show");
+      }
+    });
+  </script>
 </body>
 </html>
+
+<!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
