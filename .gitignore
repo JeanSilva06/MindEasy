@@ -34,3 +34,5 @@ build/
 
 ### Arquivo de config ###
 application.properties
+/oracleJdk-25/bin
+/oracleJdk-25/lib
