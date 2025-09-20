@@ -1,221 +1,67 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tela de Terapeuta – MindEasy</title>
-
-  <!-- Axios -->
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to right, #5FB6D9, #94D7F2);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .container-box {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-      display: flex;
-      max-width: 900px;
-      width: 100%;
-      overflow: hidden;
-    }
-
-    .left-panel {
-      background: #2685BF;
-      color: #fff;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
-
-    .left-panel h2 {
-      font-weight: bold;
-    }
-
-    .left-panel button {
-      border: 2px solid #fff;
-      background: transparent;
-      color: #fff;
-      border-radius: 30px;
-      padding: 10px 30px;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .left-panel button:hover {
-      background: #fff;
-      color: #2685BF;
-    }
-
-    .right-panel {
-      flex: 2;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .form-control {
-      margin-bottom: 15px;
-      border-radius: 10px;
-    }
-
-    .btn-purple {
-      background: #2685BF;
-      color: #fff;
-      border-radius: 30px;
-      padding: 10px;
-      font-weight: bold;
-      border: none;
-      transition: background 0.3s;
-    }
-
-    .btn-purple:hover {
-      background: #2685BF;
-    }
-
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-
-    .social-icons i {
-      font-size: 24px;
-      margin: 0 10px;
-      color: #6a0dad;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .social-icons i:hover {
-      transform: scale(1.2);
-      color: #5b0c9b;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Terapeuta – MindEasy Animada</title>
+    
+    <link rel="stylesheet" href="../style/cadastro.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-  <div class="container-box">
-    <!-- Painel Esquerdo -->
-    <div class="left-panel text-center">
-      <h2>Bem-vindo de volta!</h2>
-      <p>Para se manter conectado, faça login com suas informações</p>
-      <button id="btnToggle">Login Terapeuta</button>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="formCadastro">
+                <h1>Criar Conta</h1>
+                <span>use seu e-mail para se registrar</span>
+                <input type="text" id="nome" placeholder="Nome" required />
+                <select id="sexo" required>
+                    <option value="" disabled selected>Sexo</option>
+                    <option value="MASCULINO">Masculino</option>
+                    <option value="FEMININO">Feminino</option>
+                    <option value="OUTRO">Outro</option>
+                </select>
+                <input type="text" id="especialidade" placeholder="Especialidade" required />
+                <input type="text" id="crm" placeholder="CRM/Registro" required />
+                <input type="email" id="emailCadastro" placeholder="Email" required />
+                <input type="tel" id="telefone" placeholder="Telefone" required />
+                <input type="password" id="senhaCadastro" placeholder="Senha" required />
+                <button type="submit" id="cadastroButton">Cadastrar</button>
+
+            </form>
+        </div>
+
+        <div class="form-container sign-in-container">
+            <form id="formLogin">
+                <h1>Login Terapeuta</h1>
+                
+                <span>ou use sua conta</span>
+                <input type="email" id="emailLogin" placeholder="Email" required />
+                <input type="password" id="senhaLogin" placeholder="Senha" required />
+                <a href="#">Esqueceu sua senha?</a>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Bem-vindo de volta!</h1>
+                    <p>Para se manter conectado, faça login com suas informações</p>
+                    <button class="ghost" id="signIn">Login</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Olá, Terapeuta!</h1>
+                    <p>Insira seus dados e comece sua jornada conosco</p>
+                    <button class="ghost" id="signUp">Cadastrar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Painel Direito -->
-    <div class="right-panel">
-      <h3 class="text-center mb-4" id="formTitle">Criar Conta Terapeuta</h3>
-
-      <div class="social-icons">
-        <i class="fab fa-facebook"></i>
-        <i class="fab fa-google"></i>
-        <i class="fab fa-linkedin"></i>
-      </div>
-
-      <!-- FORMULÁRIO DE CADASTRO -->
-      <form id="formCadastro">
-        <input type="text" id="nome" class="form-control" placeholder="Nome" required>
-        <select id="sexo" class="form-control" required>
-          <option value="" disabled selected>Sexo</option>
-          <option value="MASCULINO">Masculino</option>
-          <option value="FEMININO">Feminino</option>
-          <option value="OUTRO">Outro</option>
-        </select>
-        <input type="text" id="especialidade" class="form-control" placeholder="Especialidade" required>
-        <input type="text" id="crm" class="form-control" placeholder="CRM/Registro" required>
-        <input type="email" id="emailCadastro" class="form-control" placeholder="Email" required>
-        <input type="tel" id="telefone" class="form-control" placeholder="Telefone" required>
-        <input type="password" id="senhaCadastro" class="form-control" placeholder="Senha" required>
-        <button type="submit" class="btn btn-purple w-100">Cadastrar</button>
-      </form>
-
-      <!-- FORMULÁRIO DE LOGIN -->
-      <form id="formLogin" style="display: none;">
-        <input type="email" id="emailLogin" class="form-control" placeholder="Email" required>
-        <input type="password" id="senhaLogin" class="form-control" placeholder="Senha" required>
-        <button type="submit" class="btn btn-purple w-100">Entrar</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const BASE_URL = 'http://localhost:8080';
-    const btnToggle = document.getElementById('btnToggle');
-    const formCadastro = document.getElementById('formCadastro');
-    const formLogin = document.getElementById('formLogin');
-    const formTitle = document.getElementById('formTitle');
-
-    // Alterna entre Cadastro e Login
-    btnToggle.addEventListener('click', () => {
-      const showingCadastro = formCadastro.style.display !== 'none';
-      formCadastro.style.display = showingCadastro ? 'none' : 'block';
-      formLogin.style.display = showingCadastro ? 'block' : 'none';
-      formTitle.innerText = showingCadastro ? 'Login Terapeuta' : 'Criar Conta Terapeuta';
-      btnToggle.innerText = showingCadastro ? 'Criar Conta Terapeuta' : 'Login Terapeuta';
-    });
-
-    // === CADASTRO TERAPEUTA ===
-    formCadastro.addEventListener('submit', e => {
-      e.preventDefault();
-      const data = {
-        nome: document.getElementById('nome').value,
-        sexo: document.getElementById('sexo').value,
-        especialidade: document.getElementById('especialidade').value,
-        crm: document.getElementById('crm').value,
-        email: document.getElementById('emailCadastro').value,
-        telefone: document.getElementById('telefone').value,
-        senha: document.getElementById('senhaCadastro').value
-      };
-
-      axios.post(`${BASE_URL}/terapeuta/cadastro`, data)
-        .then(res => {
-          alert('Terapeuta cadastrado com sucesso!');
-          console.log(res.data);
-        })
-        .catch(err => {
-          alert('Erro ao cadastrar terapeuta.');
-          console.error(err.response || err);
-        });
-    });
-
-    // === LOGIN — HTTP BASIC ===
-    formLogin.addEventListener('submit', e => {
-      e.preventDefault();
-      const email = document.getElementById('emailLogin').value;
-      const senha = document.getElementById('senhaLogin').value;
-
-      axios.get(`${BASE_URL}/terapeuta/terapeutas`, {
-        auth: { username: email, password: senha }
-      })
-        .then(res => {
-          alert('Login realizado com sucesso!');
-          console.log(res.data);
-          // ex.: window.location.href = 'dashboard.html';
-        })
-        .catch(err => {
-          alert('Credenciais inválidas.');
-          console.error(err.response || err);
-        });
-    });
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../script/cadastro.js"></script>
 </body>
-
 </html>
