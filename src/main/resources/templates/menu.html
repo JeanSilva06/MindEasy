@@ -2,206 +2,58 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Menu</title>
+  <title>Menu – MindEasy</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../style/menu.css" rel="stylesheet">
 
-  <style>
-    /* =====================
-       BASE
-    ===================== */
-    body {
-      margin: 20;
-      font-family: Arial, sans-serif;
-      /*background: linear-gradient(to bottom, #eaf4fc, #ffffff);*/
-      color: #000000;
-      padding-top: 50px; /* espaço para navbar fixa */
-    }
-
-    /* =====================
-       NAVBAR
-    ===================== */
-    .navbar {
-      background: linear-gradient(to right, #4b00e0, #8e2de2);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .navbar-brand {
-      font-weight: bold;
-      color: #fff !important;
-      cursor: pointer;
-    }
-
-    .navbar-nav .nav-link {
-      color: #fff !important;
-      margin-left: 15px;
-    }
-
-    .navbar-nav .nav-link:hover {
-      text-decoration: underline;
-    }
-
-    .navbar-nav .nav-link.text-danger {
-      color: #ff4d4d !important;
-    }
-
-    /* =====================
-       SIDEBAR
-    ===================== */
-    .sidebar {
-      height: 100%;
-      width: 85px;
-      position: fixed;
-      z-index: 1100;
-      top: 0;
-      left: -85px; /* escondida por padrão */
-      background: linear-gradient(to bottom, #4b00e0, #8e2de2);
-      padding-top: 20px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      transition: left 0.3s ease;
-    }
-
-    .sidebar.show {
-      left: 0; /* aparece */
-    }
-
-    .sidebar a {
-      text-decoration: none;
-      font-size: 22px;
-      color: #f1f1f1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      transition: background 0.3s ease;
-    }
-
-    .sidebar a:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* =====================
-       CONTEÚDO
-    ===================== */
-    #main-content {
-      padding: 20px;
-      margin-top: 80px; /* espaço da navbar */
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
-    /* =====================
-       MENU (CARDS)
-    ===================== */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      justify-items: center;
-      margin-bottom: 50px;
-    }
-
-    .card {
-      background: #fff;
-      padding: 40px 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      text-align: center;
-      width: 180px;
-      transition: transform 0.2s;
-      cursor: pointer;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card i {
-      font-size: 50px;
-      color: #1d20ce;
-      margin-bottom: 15px;
-    }
-
-    .card p {
-      margin: 0;
-      color: #1d20ce;
-      font-weight: 500;
-    }
-  </style>
 </head>
 <body>
   <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <a href="agenda.html" title="Agendamento"><i class="fa-regular fa-calendar"></i></a>
-    <a href="terapeuta-chat.html" title="Chat"><i class="fa-regular fa-comment"></i></a>
-    <a href="perfil-servicos.html" title="Avaliação"><i class="fa-regular fa-star"></i></a>
-    <a href="agenda.html" title="Remarcar"><i class="fa-regular fa-calendar-check"></i></a>
+  <div class="sidebar">
+    <div class="brand">MindEasy</div>
+    <ul>
+      <li><a href="agenda.html"><i class="fa-regular fa-calendar"></i> Agenda</a></li>
+      <li><a href="cadastroCliente.html"><i class="fa-solid fa-user"></i> Cliente</a></li>
+      <li><a href="cadastroTerapeuta.html"><i class="fa-solid fa-user-doctor"></i> Terapeuta</a></li>
+      <li><a href="perfil-servicos.html"><i class="fa-regular fa-star"></i> Serviços</a></li>
+      <li><a href="terapeuta-chat.html"><i class="fa-regular fa-comment"></i> Chat</a></li>
+      <li><a href="terapeuta-video.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
+    </ul>
+    <div class="logout">
+      <a class="d-block text-center text-danger fw-bold" href="index.html">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </a>
+    </div>
   </div>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="#" id="brand">MindEasy</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="agenda.html">Agenda</a></li>
-          <li class="nav-item"><a class="nav-link" href="cadastroCliente.html">Cliente</a></li>
-          <li class="nav-item"><a class="nav-link" href="cadastroTerapeuta.html">Terapeuta</a></li>
-          <li class="nav-item"><a class="nav-link" href="perfil-servicos.html">Serviços</a></li>
-          <li class="nav-item"><a class="nav-link" href="terapeuta-chat.html">Chat</a></li>
-          <li class="nav-item"><a class="nav-link" href="terapeuta-video.html">Videochamada</a></li>
-          <li class="nav-item"><a class="nav-link text-danger" href="index.html">Sair</a></li>
-        </ul>
+  <!-- Main content -->
+  <div class="main">
+    <h2>Bem-vindo ao MindEasy</h2>
+    <p>Escolha uma opção abaixo:</p>
+
+    <div class="card-grid">
+      <div class="card" onclick="location.href='agenda.html'">
+        <i class="fa-regular fa-calendar"></i>
+        <p>Agendamento</p>
+      </div>
+      <div class="card" onclick="location.href='terapeuta-chat.html'">
+        <i class="fa-regular fa-comment"></i>
+        <p>Chat</p>
+      </div>
+      <div class="card" onclick="location.href='perfil-servicos.html'">
+        <i class="fa-regular fa-star"></i>
+        <p>Avaliação</p>
+      </div>
+      <div class="card" onclick="location.href='agenda.html'">
+        <i class="fa-regular fa-calendar-check"></i>
+        <p>Remarcar Consulta</p>
       </div>
     </div>
-  </nav>
+  </div>
 
-  <!-- Conteúdo -->
-  <div id="main-content">
-    <div class="container">
-        <p>Agendamento</p>
-    </div>
+  <div id="sidebar-handle">&#x25B6;</div> <!-- seta -->
 
-  
-  <script>
-    const sidebar = document.getElementById("sidebar");
-    const brand = document.getElementById("brand");
-
-    brand.addEventListener("mouseenter", () => {
-      sidebar.classList.add("show");
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!sidebar.contains(event.target) && event.target !== brand) {
-        sidebar.classList.remove("show");
-      }
-    });
-  </script>
-</body>
-</html>
-
-<!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../script/menu.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
