@@ -1,9 +1,9 @@
 package com.br.mindeasy.service;
 
-import org.springframework.stereotype.Service;
-
 import com.br.mindeasy.dto.request.AgendamentoRequestDTO;
 import com.br.mindeasy.dto.response.AgendamentoResponseDTO;
+import com.br.mindeasy.enums.StatusAgendamento;
+import com.br.mindeasy.exceptions.BusinessException;
 import com.br.mindeasy.model.Agendamento;
 import com.br.mindeasy.model.Paciente;
 import com.br.mindeasy.model.Terapeuta;
@@ -12,9 +12,10 @@ import com.br.mindeasy.repository.PacienteRepository;
 import com.br.mindeasy.repository.TerapeutaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
-import com.br.mindeasy.enums.StatusAgendamento;
-import com.br.mindeasy.exceptions.BusinessException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AgendamentoService {
@@ -33,6 +34,7 @@ public class AgendamentoService {
         this.terapeutaRepository = terapeutaRepository;
     }
 
+    // Mapeamento manual
     private AgendamentoResponseDTO toResponseDTO(Agendamento agendamento, Paciente paciente, Terapeuta terapeuta) {
         return new AgendamentoResponseDTO(
             agendamento.getId(),
@@ -45,16 +47,14 @@ public class AgendamentoService {
             agendamento.getAvaliacaoComentario()
         );
     }
+
     public AgendamentoResponseDTO agendar(AgendamentoRequestDTO dto) {
-        // Validar paciente
         Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
             .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 
-        // Validar terapeuta
         Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
             .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
 
-        // Verificar conflitos de horário
         boolean conflito = agendamentoRepository.existsByTerapeutaIdAndDataAndHoraInicio(
             terapeuta.getId(), dto.getData(), dto.getHoraInicio()
         );
@@ -63,7 +63,6 @@ public class AgendamentoService {
             throw new BusinessException("Horário já está ocupado para esse terapeuta");
         }
 
-        // Verificar limite de agendamentos do paciente
         long agendamentosNoDia = agendamentoRepository.countByPacienteIdAndData(
             paciente.getId(), dto.getData()
         );
@@ -72,7 +71,6 @@ public class AgendamentoService {
             throw new BusinessException("Paciente já possui 2 agendamentos nesse dia");
         }
 
-        // Criar agendamento
         Agendamento agendamento = new Agendamento();
         agendamento.setPaciente(paciente);
         agendamento.setTerapeuta(terapeuta);
@@ -83,5 +81,73 @@ public class AgendamentoService {
         agendamentoRepository.save(agendamento);
 
         return toResponseDTO(agendamento, paciente, terapeuta);
+    }
+
+    public AgendamentoResponseDTO buscarPorId(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+
+        return toResponseDTO(agendamento, agendamento.getPaciente(), agendamento.getTerapeuta());
+    }
+
+    public List<AgendamentoResponseDTO> listarTodos() {
+        return agendamentoRepository.findAll().stream()
+            .map(a -> toResponseDTO(a, a.getPaciente(), a.getTerapeuta()))
+            .collect(Collectors.toList());
+    }
+
+    public List<AgendamentoResponseDTO> listarPorTerapeuta(Long idTerapeuta) {
+        return agendamentoRepository.findByTerapeutaId(idTerapeuta).stream()
+            .map(a -> toResponseDTO(a, a.getPaciente(), a.getTerapeuta()))
+            .collect(Collectors.toList());
+    }
+
+    public AgendamentoResponseDTO atualizar(Long id, AgendamentoRequestDTO dto) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+
+        Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
+            .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+
+        Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
+            .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+
+        agendamento.setPaciente(paciente);
+        agendamento.setTerapeuta(terapeuta);
+        agendamento.setData(dto.getData());
+        agendamento.setHoraInicio(dto.getHoraInicio());
+
+        agendamentoRepository.save(agendamento);
+
+        return toResponseDTO(agendamento, paciente, terapeuta);
+    }
+
+    public AgendamentoResponseDTO atualizarParcial(Long id, AgendamentoRequestDTO dto) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+
+        if (dto.getData() != null) agendamento.setData(dto.getData());
+        if (dto.getHoraInicio() != null) agendamento.setHoraInicio(dto.getHoraInicio());
+        if (dto.getPacienteId() != null) {
+            Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+            agendamento.setPaciente(paciente);
+        }
+        if (dto.getTerapeutaId() != null) {
+            Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
+                .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+            agendamento.setTerapeuta(terapeuta);
+        }
+
+        agendamentoRepository.save(agendamento);
+
+        return toResponseDTO(agendamento, agendamento.getPaciente(), agendamento.getTerapeuta());
+    }
+
+    public void deletar(Long id) {
+        Agendamento agendamento = agendamentoRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+
+        agendamentoRepository.delete(agendamento);
     }
 }

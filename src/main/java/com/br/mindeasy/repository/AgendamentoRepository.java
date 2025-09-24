@@ -22,4 +22,6 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     boolean existsByTerapeutaIdAndDataAndHoraInicio(Long terapeutaId, LocalDate data, LocalTime horaInicio);
 
     long countByPacienteIdAndData(Long pacienteId, LocalDate data);
+
+    List<Agendamento> findByTerapeutaId(Long terapeutaId);
 }

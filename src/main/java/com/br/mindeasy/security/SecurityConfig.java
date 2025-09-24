@@ -22,14 +22,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(
-                    "/src/**",
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
                     "/paciente/**",
                     "/terapeuta/**",
-                    "/api/avaliacoes/**" // <-- LINHA ADICIONADA PARA LIBERAR O TESTE
+                    "/api/avaliacoes/**",
+                    "/api/agendamentos",
+                    "/api/agendamentos/**"
                 )
                 .permitAll()
                 .anyRequest().authenticated())
