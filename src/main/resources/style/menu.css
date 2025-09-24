@@ -12,11 +12,13 @@ body {
     height: 100vh;
     position: fixed;
     top: 0;
-    left: 0;
+    left: -240px; /* começa oculta */
     display: flex;
     flex-direction: column;
     padding: 20px 0;
     box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    transition: left 0.3s; /* animação suave */
+    z-index: 1000; 
 }
 
 .sidebar .brand {
@@ -24,6 +26,28 @@ body {
     font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
+}
+
+/* Handle da sidebar */ 
+#sidebar-handle { 
+    position: fixed; 
+    top: 50%; 
+    left: 0; 
+    transform: translateY(-50%);
+    width: 20px; height: 60px; 
+    background: #2685BF; 
+    color: white; display: flex; 
+    align-items: center; justify-content: center; 
+    cursor: pointer; 
+    z-index: 1001; border-top-right-radius: 5px; 
+    border-bottom-right-radius: 5px; 
+    font-size: 18px; 
+    } 
+.sidebar.shown + #sidebar-handle { 
+    display: none; 
+} 
+.sidebar.shown { 
+    left: 0; 
 }
 
 .sidebar ul {
