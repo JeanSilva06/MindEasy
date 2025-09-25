@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
@@ -17,4 +19,9 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     """)
     List<Object[]> countAvaliacoesByNota(@Param("terapeutaId") Long terapeutaId);
 
+    boolean existsByTerapeutaIdAndDataAndHoraInicio(Long terapeutaId, LocalDate data, LocalTime horaInicio);
+
+    long countByPacienteIdAndData(Long pacienteId, LocalDate data);
+
+    List<Agendamento> findByTerapeutaId(Long terapeutaId);
 }
