@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat – MindEasy</title>
+
+  <!-- Ícones do Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Estilo externo -->
+  <link rel="stylesheet" href="../style/chat.css">
+</head>
+<body>
+
+  <!-- ===== SIDEBAR (Menu lateral fixo) ===== -->
+  <div class="sidebar" id="sidebar">
+    <div class="brand">MindEasy</div>
+    <ul>
+      <li><a href="agenda.html"><i class="fa-regular fa-calendar"></i> Agenda</a></li>
+      <li><a href="cadastro.html"><i class="fa-solid fa-user"></i> Cliente</a></li>
+      <li><a href="Terapeuta.html"><i class="fa-solid fa-user-doctor"></i> Terapeuta</a></li>
+      <li><a href="perfil-servicos.html"><i class="fa-regular fa-star"></i> Serviços</a></li>
+      <li><a href="chat.html"><i class="fa-regular fa-comment"></i> Chat</a></li>
+      <li><a href="terapeuta-video.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
+    </ul>
+
+    <!-- Botão de sair -->
+    <div class="logout">
+      <a class="d-block text-center text-danger fw-bold" href="index.html">
+        <i class="fa-solid fa-right-from-bracket"></i> Sair
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== CONTAINER PRINCIPAL (Sidebar + Lista de contatos + Chat) ===== -->
+  <div class="main-container">
+
+    <!-- Lista de contatos -->
+    <div class="contacts-list">
+      <div class="contacts-header">Contatos</div>
+
+      <!-- Contato 1 -->
+      <div class="contact">
+        <img src="https://via.placeholder.com/40" alt="Cliente">
+        <div class="contact-info">
+          <h4>João Silva</h4>
+          <small>online</small>
+        </div>
+      </div>
+
+      <!-- Contato 2 -->
+      <div class="contact">
+        <img src="https://via.placeholder.com/40" alt="Cliente">
+        <div class="contact-info">
+          <h4>Maria Oliveira</h4>
+          <small>visto por último 09:30</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ÁREA DO CHAT ===== -->
+    <div class="chat-container">
+
+      <!-- Cabeçalho do chat -->
+      <div class="chat-header">
+        <div class="chat-user">
+          <img src="https://via.placeholder.com/40" alt="Cliente">
+          <div>
+            <h4>Cliente João Silva</h4>
+            <small>online</small>
+          </div>
+        </div>
+        <div class="chat-actions">
+          <i class="fa-solid fa-video"></i>
+          <i class="fa-solid fa-phone"></i>
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+      </div>
+
+      <!-- Corpo do chat -->
+      <div class="chat-body" id="chatBody">
+        <div class="message received">
+          <p>Olá, doutor!</p>
+          <span class="time">10:00</span>
+        </div>
+        <div class="message sent">
+          <p>Olá João, tudo bem? Como você está se sentindo hoje?</p>
+          <span class="time">10:02</span>
+        </div>
+      </div>
+
+      <!-- Campo de envio de mensagem -->
+      <div class="chat-footer">
+        <input type="text" id="messageInput" placeholder="Digite sua mensagem...">
+        <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRIPT DO CHAT ===== -->
+  <script>
+    const sendBtn = document.getElementById("sendBtn");
+    const input = document.getElementById("messageInput");
+    const chatBody = document.getElementById("chatBody");
+
+    // Envia mensagem ao clicar no botão
+    sendBtn.addEventListener("click", () => {
+      const text = input.value.trim();
+      if (text !== "") {
+        const msg = document.createElement("div");
+        msg.classList.add("message", "sent");
+        msg.innerHTML = `<p>${text}</p><span class="time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>`;
+        chatBody.appendChild(msg);
+        input.value = "";
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }
+    });
+
+    // Envia mensagem ao pressionar Enter
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendBtn.click();
+    });
+  </script>
+</body>
+</html>
+
