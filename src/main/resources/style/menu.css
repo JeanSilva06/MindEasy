@@ -1,13 +1,13 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: linear-gradient(to right, #5FB6D9, #94D7F2); /* igual ao cadastro */
+    background: linear-gradient(to right, #5FB6D9, #94D7F2); 
     display: flex;
 }
 
 .sidebar {
     width: 240px;
-    background: #2685BF; /* azul do cadastro */
+    background: #2685BF; 
     color: #fff;
     height: 100vh;
     position: fixed;
@@ -63,12 +63,21 @@ body {
     margin-left: 240px;
     padding: 20px;
     flex: 1;
+    align-items: center;
+}
+
+.mensagemInicial {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
+    max-width: 1030px;    
+    margin-inline: auto;   
+    padding-inline: 16px;
 }
 
 .card {
