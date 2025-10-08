@@ -7,6 +7,7 @@ import java.util.List;
 import com.br.mindeasy.enums.DiaAtendimento;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,13 +23,20 @@ public class Agenda {
     private Long id;
 
     @OneToOne
+    @Column(nullable = false)
     private Terapeuta terapeuta;
 
+    @Column(nullable = false)
     private LocalTime horaEntrada;
+
+    @Column(nullable = false)
     private LocalTime horaSaida;
+
+    @Column(nullable = false)
     private Duration duracaoConsulta;
 
     @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL)
+    @Column(nullable = false)
     private List<DiaAtendimento> dias;
 
     //Contrutor padrão
