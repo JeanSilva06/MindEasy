@@ -5,35 +5,34 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.br.mindeasy.enums.DiaAtendimento;
-import com.br.mindeasy.model.Terapeuta;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public class AgendaRequestDTO {
     @NotNull
-    private Terapeuta terapeuta;
+    private Long idTerapeuta;
 
-    @NotBlank
+    @NotNull
     private LocalTime horaEntrada;
 
-    @NotBlank
+    @NotNull
     private LocalTime horaSaida;
 
-    @NotBlank
+    @NotNull
     private Duration duracaoConsulta;
 
     @NotEmpty
     private List<DiaAtendimento> dias;
 
     //Getters e Setters
-    public Terapeuta getTerapeuta() {
-        return terapeuta;
+
+    public Long getIdTerapeuta() {
+        return idTerapeuta;
     }
 
-    public void setTerapeuta(Terapeuta terapeuta) {
-        this.terapeuta = terapeuta;
+    public void setIdTerapeuta(Long idTerapeuta) {
+        this.idTerapeuta = idTerapeuta;
     }
 
     public LocalTime getHoraEntrada() {

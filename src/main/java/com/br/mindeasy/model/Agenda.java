@@ -6,13 +6,17 @@ import java.util.List;
 
 import com.br.mindeasy.enums.DiaAtendimento;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -23,7 +27,7 @@ public class Agenda {
     private Long id;
 
     @OneToOne
-    @Column(nullable = false)
+    @JoinColumn(name = "terapeuta_id", nullable = false)
     private Terapeuta terapeuta;
 
     @Column(nullable = false)
@@ -35,8 +39,10 @@ public class Agenda {
     @Column(nullable = false)
     private Duration duracaoConsulta;
 
-    @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL)
-    @Column(nullable = false)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "agenda_dias", joinColumns = @JoinColumn(name = "agenda_id"))
+    @Column(name = "dia")
+    @Enumerated(EnumType.STRING)
     private List<DiaAtendimento> dias;
 
     //Contrutor padrão

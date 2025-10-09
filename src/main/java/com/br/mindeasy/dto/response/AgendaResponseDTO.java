@@ -5,65 +5,56 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.br.mindeasy.enums.DiaAtendimento;
-import com.br.mindeasy.model.Terapeuta;
 
 public class AgendaResponseDTO {
 
-    private Terapeuta terapeuta;
+    private Long id;
+    private Long idTerapeuta;
+    private String nomeTerapeuta;
     private LocalTime horaEntrada;
     private LocalTime horaSaida;
     private Duration duracaoConsulta;
     private List<DiaAtendimento> dias;
 
     //Construtor com parâmetros
-    public AgendaResponseDTO(Terapeuta terapeuta, LocalTime horaEntrada, LocalTime horaSaida, Duration duracaoConsulta,
-            List<DiaAtendimento> dias) {
-        this.terapeuta = terapeuta;
+    public AgendaResponseDTO(Long id, Long idTerapeuta, String nomeTerapeuta, LocalTime horaEntrada,
+        LocalTime horaSaida, Duration duracaoConsulta, List<DiaAtendimento> dias) {
+        this.id = id;
+        this.idTerapeuta = idTerapeuta;
+        this.nomeTerapeuta = nomeTerapeuta;
         this.horaEntrada = horaEntrada;
         this.horaSaida = horaSaida;
         this.duracaoConsulta = duracaoConsulta;
         this.dias = dias;
     }
-
+    
     //Getters e Setters
-    public Terapeuta getTerapeuta() {
-        return terapeuta;
+    public Long getId() {
+        return id;
     }
 
-    public void setTerapeuta(Terapeuta terapeuta) {
-        this.terapeuta = terapeuta;
+    public Long getIdTerapeuta() {
+        return idTerapeuta;
+    }
+
+    public String getNomeTerapeuta() {
+        return nomeTerapeuta;
     }
 
     public LocalTime getHoraEntrada() {
         return horaEntrada;
     }
 
-    public void setHoraEntrada(LocalTime horaEntrada) {
-        this.horaEntrada = horaEntrada;
-    }
-
     public LocalTime getHoraSaida() {
         return horaSaida;
-    }
-
-    public void setHoraSaida(LocalTime horaSaida) {
-        this.horaSaida = horaSaida;
     }
 
     public Duration getDuracaoConsulta() {
         return duracaoConsulta;
     }
 
-    public void setDuracaoConsulta(Duration duracaoConsulta) {
-        this.duracaoConsulta = duracaoConsulta;
-    }
-
     public List<DiaAtendimento> getDias() {
         return dias;
-    }
-
-    public void setDias(List<DiaAtendimento> dias) {
-        this.dias = dias;
     }
     
 }
