@@ -1,6 +1,8 @@
 package com.br.mindeasy.service;
 
+import com.br.mindeasy.dto.request.AvaliacaoRequestDTO;
 import com.br.mindeasy.dto.response.AvaliacaoResponseDTO;
+import com.br.mindeasy.model.Agendamento;
 import com.br.mindeasy.repository.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class AvaliacaoService {
             Long contagem = (Long) resultado[1];
 
             if (nota != null) {
-                 switch (nota) {
+                switch (nota) {
                     case 1:
                         contagem1Estrela = contagem;
                         break;
@@ -59,4 +61,47 @@ public class AvaliacaoService {
 
         return resumoDto;
     }
+
+    public AvaliacaoResponseDTO criarAvaliacao(Long agendamentoId, AvaliacaoRequestDTO dto) {
+        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        if (agendamento.getAvaliacaoNota() != null) {
+            throw new RuntimeException("Este agendamento já foi avaliado.");
+        }
+
+        agendamento.setAvaliacaoNota(dto.getNota());
+        agendamento.setAvaliacaoComentario(dto.getComentario());
+
+        agendamentoRepository.save(agendamento);
+
+        return getResumoAvaliacoes(agendamento.getTerapeuta().getId());
+    }
+
+    public AvaliacaoResponseDTO atualizarAvaliacao(Long agendamentoId, AvaliacaoRequestDTO dto) {
+        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        if (agendamento.getAvaliacaoNota() == null) {
+            throw new RuntimeException("Este agendamento ainda não foi avaliado. Crie uma avaliação antes de atualizar.");
+        }
+
+        agendamento.setAvaliacaoNota(dto.getNota());
+        agendamento.setAvaliacaoComentario(dto.getComentario());
+
+        agendamentoRepository.save(agendamento);
+
+        return getResumoAvaliacoes(agendamento.getTerapeuta().getId());
+    }
+
+    public void removerAvaliacao(Long agendamentoId) {
+    Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+            .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+    agendamento.setAvaliacaoNota(null);
+    agendamento.setAvaliacaoComentario(null);
+
+    agendamentoRepository.save(agendamento);
+}
+
 }
