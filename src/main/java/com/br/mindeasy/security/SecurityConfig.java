@@ -30,7 +30,9 @@ public class SecurityConfig {
                     "/terapeuta/**",
                     "/api/avaliacoes/**",
                     "/api/agendamentos",
-                    "/api/agendamentos/**"
+                    "/api/agendamentos/**",
+                    "/api/agendas",
+                    "/api/agendas/**"
                 )
                 .permitAll()
                 .anyRequest().authenticated())
