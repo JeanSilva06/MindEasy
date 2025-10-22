@@ -22,7 +22,7 @@
       <li><a href="perfilTerapeuta.html"><i class="fa-solid fa-user-doctor"></i> Terapeuta</a></li>
       <li><a href="menu.html"><i class="fa-regular fa-star"></i> Serviços</a></li>
       <li><a href="chat.html"><i class="fa-regular fa-comment"></i> Chat</a></li>
-      <li><a href="terapeuta-video.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
+      <li><a href="videoChamada.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
     </ul>
 
     <!-- Botão de sair -->
@@ -99,29 +99,71 @@
   </div>
 
   <!-- ===== SCRIPT DO CHAT ===== -->
-  <script>
-    const sendBtn = document.getElementById("sendBtn");
-    const input = document.getElementById("messageInput");
-    const chatBody = document.getElementById("chatBody");
+ <!-- ===== SCRIPT DO CHAT ===== -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const API_URL = "http://localhost:5000/mensagens"; // altere para o endpoint real da sua API
 
-    // Envia mensagem ao clicar no botão
-    sendBtn.addEventListener("click", () => {
-      const text = input.value.trim();
-      if (text !== "") {
-        const msg = document.createElement("div");
-        msg.classList.add("message", "sent");
-        msg.innerHTML = `<p>${text}</p><span class="time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>`;
-        chatBody.appendChild(msg);
-        input.value = "";
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }
-    });
+  const sendBtn = document.getElementById("sendBtn");
+  const input = document.getElementById("messageInput");
+  const chatBody = document.getElementById("chatBody");
 
-    // Envia mensagem ao pressionar Enter
-    input.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendBtn.click();
-    });
-  </script>
+  // ===== Função para exibir mensagens no chat =====
+  function renderMessage(msg, type) {
+    const div = document.createElement("div");
+    div.classList.add("message", type);
+    div.innerHTML = `
+      <p>${msg.texto}</p>
+      <span class="time">${msg.hora || new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+    `;
+    chatBody.appendChild(div);
+  }
+
+  // ===== Função para carregar mensagens da API =====
+  async function carregarMensagens() {
+    try {
+      const response = await axios.get(API_URL);
+      chatBody.innerHTML = ""; // limpa o chat
+      response.data.forEach(msg => {
+        renderMessage(msg, msg.remetente === "terapeuta" ? "sent" : "received");
+      });
+      chatBody.scrollTop = chatBody.scrollHeight;
+    } catch (error) {
+      console.error("Erro ao buscar mensagens:", error);
+    }
+  }
+
+  // ===== Enviar nova mensagem =====
+  async function enviarMensagem() {
+    const texto = input.value.trim();
+    if (!texto) return;
+
+    const novaMensagem = {
+      remetente: "terapeuta", // pode ser 'cliente' dependendo do usuário logado
+      texto: texto,
+      hora: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+    };
+
+    try {
+      await axios.post(API_URL, novaMensagem);
+      renderMessage(novaMensagem, "sent");
+      input.value = "";
+      chatBody.scrollTop = chatBody.scrollHeight;
+    } catch (error) {
+      console.error("Erro ao enviar mensagem:", error);
+    }
+  }
+
+  // ===== Eventos =====
+  sendBtn.addEventListener("click", enviarMensagem);
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") enviarMensagem();
+  });
+
+  // ===== Atualiza o chat automaticamente =====
+  setInterval(carregarMensagens, 5000); // atualiza a cada 5 segundos
+  carregarMensagens(); // carrega assim que entra
+</script>
 </body>
 </html>
 
