@@ -14,6 +14,8 @@ import com.br.mindeasy.repository.TerapeutaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -149,5 +151,35 @@ public class AgendamentoService {
             .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
 
         agendamentoRepository.delete(agendamento);
+    }
+
+    public long contarAtendimentosConcluidosPorMes(Long terapeutaId, int mes, int ano) {
+        if (terapeutaId == null) {
+            throw new IllegalArgumentException("terapeutaId é obrigatório");
+        }
+
+        if (mes < 1 || mes > 12) {
+            throw new IllegalArgumentException("mes deve estar entre 1 e 12");
+        }
+
+        int anoMinimo = 2000;
+        int anoMaximo = Year.now().getValue() + 1;
+        if (ano < anoMinimo || ano > anoMaximo) {
+            throw new IllegalArgumentException("ano deve estar entre " + anoMinimo + " e " + anoMaximo);
+        }
+
+        if (!terapeutaRepository.existsById(terapeutaId)) {
+            throw new EntityNotFoundException("Terapeuta não encontrado");
+        }
+
+        LocalDate inicio = LocalDate.of(ano, mes, 1);
+        LocalDate fim = inicio.withDayOfMonth(inicio.lengthOfMonth());
+
+        return agendamentoRepository.countByTerapeutaIdAndStatusAndDataBetween(
+            terapeutaId,
+            StatusAgendamento.AGENDADO,
+            inicio,
+            fim
+        );
     }
 }
