@@ -19,62 +19,132 @@ body {
     color: var(--text-color-primary);
 }
 
-/* ===== Sidebar ===== */
+/* === SIDEBAR === */
 .sidebar {
     width: 240px;
-    background-color: #f8f9fa;
-    border-right: 1px solid var(--border-color);
+    background: #2685BF; /* azul do cadastro */
+    color: #fff;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -240px; /* começa oculta */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 24px 0;
+    padding: 20px 0;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    transition: left 0.3s; /* animação suave */
+    z-index: 1000; 
+}
+
+.sidebar.shown {
+    left: 0;
 }
 
 .sidebar .brand {
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 32px;
-    color: var(--primary-color);
+    margin-bottom: 30px;
 }
 
+/* === LISTA DE LINKS === */
 .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex: 1;
 }
 
 .sidebar ul li {
-    margin: 6px 0;
+    margin-bottom: 10px;
 }
 
 .sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    text-decoration: none;
-    color: var(--text-color-secondary);
-    font-weight: 500;
-    transition: background 0.2s, color 0.2s;
+    gap: 15px;
+    transition: background 0.3s;
 }
 
 .sidebar ul li a:hover {
-    background-color: #edf2ff;
-    color: var(--primary-color);
+    background: rgba(255,255,255,0.15);
 }
 
+.sidebar ul li a i {
+    font-size: 18px;
+}
+
+/* === BOTÃO SAIR === */
 .sidebar .logout {
+    padding: 15px;
+    border-top: 1px solid rgba(255,255,255,0.3);
     text-align: center;
-    border-top: 1px solid var(--border-color);
-    padding-top: 16px;
 }
 
 .sidebar .logout a {
-    color: #dc3545;
+    color: #ffb3b3;
+    font-weight: bold;
     text-decoration: none;
-    font-weight: 600;
+    transition: color 0.3s;
 }
+
+.sidebar .logout a:hover {
+    color: #fff;
+}
+
+/* === HANDLE (botão lateral para abrir) === */
+#sidebar-handle { 
+    position: fixed; 
+    top: 50%; 
+    left: 0; 
+    transform: translateY(-50%);
+    width: 20px; 
+    height: 60px; 
+    background: #2685BF; 
+    color: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    z-index: 1001; 
+    border-top-right-radius: 5px; 
+    border-bottom-right-radius: 5px; 
+    font-size: 18px; 
+    transition: background 0.3s;
+} 
+
+#sidebar-handle:hover {
+    background: #1f6b9a;
+}
+
+.sidebar.shown + #sidebar-handle { 
+    display: none; 
+}
+
+/* === AJUSTE DO CONTEÚDO PRINCIPAL === */
+.main-content {
+    margin-left: 0;
+    transition: margin-left 0.3s;
+    padding: 20px;
+}
+
+.sidebar.shown ~ .main-content {
+    margin-left: 240px;
+}
+
+/* === RESPONSIVO === */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+    .sidebar.shown ~ .main-content {
+        margin-left: 200px;
+    }
+}
+
 
 /* ===== Conteúdo principal ===== */
 .main-content {
