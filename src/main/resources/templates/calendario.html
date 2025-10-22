@@ -1,80 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário</title>
-    <link rel="stylesheet" href="../style/calendario.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendário</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../style/calendario.css">
+
+  <!-- Fontes e Ícones -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://kit.fontawesome.com/a4e8d4f0c3.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="main-content">
-        <header class="calendar-header">
-            <div class="header-left">
-                <h1>Calendário</h1>
-                
-            </div>
-            <div class="header-right">
-                <div class="search-box">
-                    <i data-feather="search"></i>
-                    <input type="text" placeholder="Pesquisar">
-                </div>
-            </div>
-        </header>
 
-        <div class="calendar-toolbar">
-            <div class="toolbar-left">
-                <div class="date-display">
-                    <span class="date-icon-wrapper">
-                        <i data-feather="calendar"></i>
-                    </span>
-                    <div class="date-info">
-                        <h2 id="current-month-year">Outubro 2025</h2>
-                        <p>1 Out 2025 - 31 Out 2025</p>
-                    </div>
-                </div>
-                <div class="navigation-buttons">
-                    <button class="btn-icon" aria-label="Mês anterior"><i data-feather="chevron-left"></i></button>
-                    <button class="btn-today">Hoje</button>
-                    <button class="btn-icon" aria-label="Próximo mês"><i data-feather="chevron-right"></i></button>
-                </div>
-            </div>
-            <div class="toolbar-right">
-                <div class="view-switcher">
-                     <select class="view-select">
-                        <option value="month">Mês</option>
-                        <option value="week">Semana</option>
-                        <option value="day">Dia</option>
-                    </select>
-                </div>
-                <button class="btn-primary">
-                    <i data-feather="plus"></i>
-                    <span>Adicionar evento</span>
-                </button>
-            </div>
-        </div>
+  <div class="sidebar">
+  <div class="brand">MindEasy</div>
+  <ul>
+    <li><a href="calendario.html"><i class="fa-regular fa-calendar"></i> Agenda</a></li>
+    <li><a href="cadastro.html"><i class="fa-solid fa-user"></i> Cliente</a></li>
+    <li><a href="perfilTerapeuta.html"><i class="fa-solid fa-user-doctor"></i> Terapeuta</a></li>
+    <li><a href="menu.html"><i class="fa-regular fa-star"></i> Serviços</a></li>
+    <li><a href="chat.html"><i class="fa-regular fa-comment"></i> Chat</a></li>
+    <li><a href="terapeuta-video.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
+  </ul>
+  <div class="logout">
+    <a href="index.html"><i class="fa-solid fa-right-from-bracket"></i> Sair</a>
+  </div>
+</div>
 
-        <div class="calendar-grid">
-            <div class="calendar-weekdays">
-                <span>Seg</span>
-                <span>Ter</span>
-                <span>Qua</span>
-                <span>Qui</span>
-                <span>Sex</span>
-                <span>Sáb</span>
-                <span>Dom</span>
-            </div>
-            <div class="calendar-days" id="calendar-days-grid">
-                </div>
+<div id="sidebar-handle"><i class="fa-solid fa-bars"></i></div>
+
+
+  <!-- Conteúdo principal -->
+  <div class="main-content">
+    <header class="calendar-header">
+      <div class="header-left">
+        <h1>Calendário</h1>
+      </div>
+      <div class="header-right">
+        <div class="search-box">
+          <i data-feather="search"></i>
+          <input type="text" placeholder="Pesquisar">
         </div>
+      </div>
+    </header>
+
+    <div class="calendar-toolbar">
+      <div class="toolbar-left">
+        <div class="date-display">
+          <span class="date-icon-wrapper">
+            <i data-feather="calendar"></i>
+          </span>
+          <div class="date-info">
+            <h2 id="current-month-year">Outubro 2025</h2>
+            <p>1 Out 2025 - 31 Out 2025</p>
+          </div>
+        </div>
+        <div class="navigation-buttons">
+          <button class="btn-icon" id="prev-month"><i data-feather="chevron-left"></i></button>
+          <button class="btn-today" id="today-btn">Hoje</button>
+          <button class="btn-icon" id="next-month"><i data-feather="chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <div class="view-switcher">
+          <select class="view-select">
+            <option value="month">Mês</option>
+            <option value="week">Semana</option>
+            <option value="day">Dia</option>
+          </select>
+        </div>
+        <button class="btn-primary">
+          <i data-feather="plus"></i>
+          <span>Adicionar evento</span>
+        </button>
+      </div>
     </div>
 
-    <script src="../script/calendario.js"></script>
-    <script>
-        feather.replace();
-    </script>
+    <div class="calendar-grid">
+      <div class="calendar-weekdays">
+        <span>Seg</span>
+        <span>Ter</span>
+        <span>Qua</span>
+        <span>Qui</span>
+        <span>Sex</span>
+        <span>Sáb</span>
+        <span>Dom</span>
+      </div>
+      <div class="calendar-days" id="calendar-days-grid"></div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="../script/calendario.js"></script>
 </body>
 </html>
