@@ -4,16 +4,20 @@ import com.br.mindeasy.dto.request.AvaliacaoRequestDTO;
 import com.br.mindeasy.dto.response.AvaliacaoResponseDTO;
 import com.br.mindeasy.model.Agendamento;
 import com.br.mindeasy.repository.AgendamentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class AvaliacaoService {
 
-    @Autowired
-    private AgendamentoRepository agendamentoRepository;
+    private final AgendamentoRepository agendamentoRepository;
+
+    public AvaliacaoService(AgendamentoRepository agendamentoRepository) {
+        this.agendamentoRepository = agendamentoRepository;
+    }
 
     public AvaliacaoResponseDTO getResumoAvaliacoes(Long terapeutaId) {
         List<Object[]> resultadosDoBanco = agendamentoRepository.countAvaliacoesByNota(terapeutaId);
@@ -28,23 +32,13 @@ public class AvaliacaoService {
             Integer nota = (Integer) resultado[0];
             Long contagem = (Long) resultado[1];
 
-            if (nota != null) {
+            if (nota != null && contagem != null) {
                 switch (nota) {
-                    case 1:
-                        contagem1Estrela = contagem;
-                        break;
-                    case 2:
-                        contagem2Estrelas = contagem;
-                        break;
-                    case 3:
-                        contagem3Estrelas = contagem;
-                        break;
-                    case 4:
-                        contagem4Estrelas = contagem;
-                        break;
-                    case 5:
-                        contagem5Estrelas = contagem;
-                        break;
+                    case 1 -> contagem1Estrela = contagem;
+                    case 2 -> contagem2Estrelas = contagem;
+                    case 3 -> contagem3Estrelas = contagem;
+                    case 4 -> contagem4Estrelas = contagem;
+                    case 5 -> contagem5Estrelas = contagem;
                 }
             }
         }
@@ -64,11 +58,13 @@ public class AvaliacaoService {
 
     public AvaliacaoResponseDTO criarAvaliacao(Long agendamentoId, AvaliacaoRequestDTO dto) {
         Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         if (agendamento.getAvaliacaoNota() != null) {
-            throw new RuntimeException("Este agendamento já foi avaliado.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este agendamento já foi avaliado.");
         }
+
+        validateNota(dto.getNota());
 
         agendamento.setAvaliacaoNota(dto.getNota());
         agendamento.setAvaliacaoComentario(dto.getComentario());
@@ -80,11 +76,13 @@ public class AvaliacaoService {
 
     public AvaliacaoResponseDTO atualizarAvaliacao(Long agendamentoId, AvaliacaoRequestDTO dto) {
         Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         if (agendamento.getAvaliacaoNota() == null) {
-            throw new RuntimeException("Este agendamento ainda não foi avaliado. Crie uma avaliação antes de atualizar.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este agendamento ainda não foi avaliado. Crie uma avaliação antes de atualizar.");
         }
+
+        validateNota(dto.getNota());
 
         agendamento.setAvaliacaoNota(dto.getNota());
         agendamento.setAvaliacaoComentario(dto.getComentario());
@@ -95,13 +93,18 @@ public class AvaliacaoService {
     }
 
     public void removerAvaliacao(Long agendamentoId) {
-    Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
-            .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
-    agendamento.setAvaliacaoNota(null);
-    agendamento.setAvaliacaoComentario(null);
+        agendamento.setAvaliacaoNota(null);
+        agendamento.setAvaliacaoComentario(null);
 
-    agendamentoRepository.save(agendamento);
-}
+        agendamentoRepository.save(agendamento);
+    }
 
+    private void validateNota(Integer nota) {
+        if (nota == null || nota < 1 || nota > 5) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nota inválida. Deve ser entre 1 e 5.");
+        }
+    }
 }

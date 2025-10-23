@@ -3,7 +3,6 @@ package com.br.mindeasy.service;
 import com.br.mindeasy.dto.request.AgendamentoRequestDTO;
 import com.br.mindeasy.dto.response.AgendamentoResponseDTO;
 import com.br.mindeasy.enums.StatusAgendamento;
-import com.br.mindeasy.exceptions.BusinessException;
 import com.br.mindeasy.model.Agendamento;
 import com.br.mindeasy.model.Paciente;
 import com.br.mindeasy.model.Terapeuta;
@@ -11,8 +10,9 @@ import com.br.mindeasy.repository.AgendamentoRepository;
 import com.br.mindeasy.repository.PacienteRepository;
 import com.br.mindeasy.repository.TerapeutaRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +34,6 @@ public class AgendamentoService {
         this.terapeutaRepository = terapeutaRepository;
     }
 
-    // Mapeamento manual
     private AgendamentoResponseDTO toResponseDTO(Agendamento agendamento, Paciente paciente, Terapeuta terapeuta) {
         return new AgendamentoResponseDTO(
             agendamento.getId(),
@@ -50,17 +49,17 @@ public class AgendamentoService {
 
     public AgendamentoResponseDTO agendar(AgendamentoRequestDTO dto) {
         Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
-            .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado"));
 
         Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
-            .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terapeuta não encontrado"));
 
         boolean conflito = agendamentoRepository.existsByTerapeutaIdAndDataAndHoraInicio(
             terapeuta.getId(), dto.getData(), dto.getHoraInicio()
         );
 
         if (conflito) {
-            throw new BusinessException("Horário já está ocupado para esse terapeuta");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Horário já está ocupado para esse terapeuta");
         }
 
         long agendamentosNoDia = agendamentoRepository.countByPacienteIdAndData(
@@ -68,7 +67,7 @@ public class AgendamentoService {
         );
 
         if (agendamentosNoDia >= 2) {
-            throw new BusinessException("Paciente já possui 2 agendamentos nesse dia");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Paciente já possui 2 agendamentos nesse dia");
         }
 
         Agendamento agendamento = new Agendamento();
@@ -85,7 +84,7 @@ public class AgendamentoService {
 
     public AgendamentoResponseDTO buscarPorId(Long id) {
         Agendamento agendamento = agendamentoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         return toResponseDTO(agendamento, agendamento.getPaciente(), agendamento.getTerapeuta());
     }
@@ -104,13 +103,13 @@ public class AgendamentoService {
 
     public AgendamentoResponseDTO atualizar(Long id, AgendamentoRequestDTO dto) {
         Agendamento agendamento = agendamentoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
-            .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado"));
 
         Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
-            .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terapeuta não encontrado"));
 
         agendamento.setPaciente(paciente);
         agendamento.setTerapeuta(terapeuta);
@@ -124,18 +123,18 @@ public class AgendamentoService {
 
     public AgendamentoResponseDTO atualizarParcial(Long id, AgendamentoRequestDTO dto) {
         Agendamento agendamento = agendamentoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         if (dto.getData() != null) agendamento.setData(dto.getData());
         if (dto.getHoraInicio() != null) agendamento.setHoraInicio(dto.getHoraInicio());
         if (dto.getPacienteId() != null) {
             Paciente paciente = pacienteRepository.findById(dto.getPacienteId())
-                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Paciente não encontrado"));
             agendamento.setPaciente(paciente);
         }
         if (dto.getTerapeutaId() != null) {
             Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
-                .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terapeuta não encontrado"));
             agendamento.setTerapeuta(terapeuta);
         }
 
@@ -146,7 +145,7 @@ public class AgendamentoService {
 
     public void deletar(Long id) {
         Agendamento agendamento = agendamentoRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Agendamento não encontrado"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado"));
 
         agendamentoRepository.delete(agendamento);
     }

@@ -1,7 +1,7 @@
 package com.br.mindeasy.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.net.URI;
+import java.util.List;
 
 import com.br.mindeasy.dto.request.PacienteRequestDTO;
 import com.br.mindeasy.dto.response.PacienteResponseDTO;
@@ -10,19 +10,12 @@ import com.br.mindeasy.service.PacienteService;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("/paciente")
+@RequestMapping("/api/pacientes")
 public class PacienteController {
     private final PacienteService service;
 
@@ -30,16 +23,18 @@ public class PacienteController {
         this.service = service;
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<PacienteResponseDTO> cadastrar(@RequestBody @Valid PacienteRequestDTO requestDTO) {
+    @PostMapping
+    public ResponseEntity<PacienteResponseDTO> cadastrar(@Valid @RequestBody PacienteRequestDTO requestDTO) {
         PacienteResponseDTO responseDTO = service.cadastrarPaciente(requestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(responseDTO.getId()).toUri();
+        return ResponseEntity.created(location).body(responseDTO);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid PacienteRequestDTO requestDTO) {
+            @Valid @RequestBody PacienteRequestDTO requestDTO) {
         PacienteResponseDTO updated = service.atualizarPaciente(id, requestDTO);
         return ResponseEntity.ok(updated);
     }
@@ -53,11 +48,10 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<PacienteResponseDTO> buscarPorId(@PathVariable Long id) {
         Paciente paciente = service.buscarPorId(id);
-        PacienteResponseDTO responseDTO = toResponseDTO(paciente);
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.ok(toResponseDTO(paciente));
     }
 
-    @GetMapping("/pacientes")
+    @GetMapping
     public ResponseEntity<List<PacienteResponseDTO>> listarTodos() {
         List<PacienteResponseDTO> pacientes = service.listarPacientes();
         return ResponseEntity.ok(pacientes);
@@ -71,5 +65,4 @@ public class PacienteController {
                 p.getSexo(),
                 p.getDataNascimento());
     }
-
 }
