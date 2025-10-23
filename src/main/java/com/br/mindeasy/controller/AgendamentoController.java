@@ -6,9 +6,11 @@ import com.br.mindeasy.service.AgendamentoService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 import java.util.List;
@@ -41,6 +43,25 @@ public class AgendamentoController {
         return ResponseEntity.ok(lista);
     }
 
+    // GET: agendamentos realizados por um terapeuta específico no período selecionado
+    @GetMapping("/terapeutas/{terapeutaId}/concluidos")
+    public ResponseEntity<Long> contarConcluidosPorMes(
+        @PathVariable Long terapeutaId,
+        @RequestParam int mes,
+        @RequestParam int ano
+    ) {
+        try {
+            long total = agendamentoService.contarAtendimentosConcluidosPorMes(terapeutaId, mes, ano);
+            return ResponseEntity.ok(total);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        } catch (jakarta.persistence.EntityNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+    }
+
+
+    // POST: criação de agendamento
     @PostMapping
     public ResponseEntity<AgendamentoResponseDTO> criar(@Valid @RequestBody AgendamentoRequestDTO dto) {
         AgendamentoResponseDTO criado = agendamentoService.agendar(dto);

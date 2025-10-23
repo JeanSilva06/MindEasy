@@ -1,5 +1,6 @@
 package com.br.mindeasy.repository;
 
+import com.br.mindeasy.enums.StatusAgendamento;
 import com.br.mindeasy.model.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,11 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     long countByPacienteIdAndData(Long pacienteId, LocalDate data);
 
     List<Agendamento> findByTerapeutaId(Long terapeutaId);
+
+    long countByTerapeutaIdAndStatusAndDataBetween(
+        Long terapeutaId,
+        StatusAgendamento status,
+        LocalDate dataInicio,
+        LocalDate dataFim
+    );
 }
