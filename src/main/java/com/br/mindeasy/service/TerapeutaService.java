@@ -3,16 +3,16 @@ package com.br.mindeasy.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.br.mindeasy.dto.request.TerapeutaRequestDTO;
 import com.br.mindeasy.dto.response.TerapeutaResponseDTO;
 import com.br.mindeasy.model.Terapeuta;
 import com.br.mindeasy.repository.TerapeutaRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class TerapeutaService {
@@ -26,13 +26,14 @@ public class TerapeutaService {
 
     public Terapeuta buscarPorEmail(String email) {
         return repository.findByEmail(email)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Terapeuta com este email " + email + " nao encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Terapeuta com este email " + email + " nao encontrado"));
     }
 
     public Terapeuta buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Terapeuta com este id " + id + " nao encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Terapeuta com este id " + id + " nao encontrado"));
     }
 
     @Transactional(readOnly = true)

@@ -3,16 +3,16 @@ package com.br.mindeasy.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.br.mindeasy.dto.request.PacienteRequestDTO;
 import com.br.mindeasy.dto.response.PacienteResponseDTO;
 import com.br.mindeasy.model.Paciente;
 import com.br.mindeasy.repository.PacienteRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PacienteService {
@@ -26,12 +26,14 @@ public class PacienteService {
 
     public Paciente buscarPorEmail(String email) {
         return repository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Paciente com este email " + email + " nao encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Paciente com este email " + email + " nao encontrado"));
     }
 
     public Paciente buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Paciente com este id " + id + " nao encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Paciente com este id " + id + " nao encontrado"));
     }
 
     @Transactional(readOnly = true)
@@ -52,9 +54,7 @@ public class PacienteService {
         paciente.setDataNascimento(dto.getDataNascimento());
 
         Paciente pacienteSalvo = repository.save(paciente);
-
-        PacienteResponseDTO response = toResponseDTO(pacienteSalvo);
-        return response;
+        return toResponseDTO(pacienteSalvo);
     }
 
     @Transactional

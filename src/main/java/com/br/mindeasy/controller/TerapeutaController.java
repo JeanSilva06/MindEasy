@@ -1,17 +1,11 @@
 package com.br.mindeasy.controller;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.br.mindeasy.dto.request.TerapeutaRequestDTO;
 import com.br.mindeasy.dto.response.TerapeutaResponseDTO;
@@ -21,7 +15,7 @@ import com.br.mindeasy.service.TerapeutaService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/terapeuta")
+@RequestMapping("/api/terapeutas")
 public class TerapeutaController {
     private final TerapeutaService service;
 
@@ -29,10 +23,12 @@ public class TerapeutaController {
         this.service = service;
     }
 
-    @PostMapping("/cadastro")
-    public ResponseEntity<TerapeutaResponseDTO> cadastrar(@RequestBody @Valid TerapeutaRequestDTO requestDTO) {
+    @PostMapping
+    public ResponseEntity<TerapeutaResponseDTO> cadastrar(@Valid @RequestBody TerapeutaRequestDTO requestDTO) {
         TerapeutaResponseDTO responseDTO = service.cadastrarTerapeuta(requestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(responseDTO.getId()).toUri();
+        return ResponseEntity.created(location).body(responseDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -44,7 +40,7 @@ public class TerapeutaController {
     @PutMapping("/{id}")
     public ResponseEntity<TerapeutaResponseDTO> atualizar(
             @PathVariable Long id,
-            @RequestBody @Valid TerapeutaRequestDTO dto) {
+            @Valid @RequestBody TerapeutaRequestDTO dto) {
         TerapeutaResponseDTO terapeutaAtualizado = service.atualizarTerapeuta(id, dto);
         return ResponseEntity.ok(terapeutaAtualizado);
     }
@@ -56,7 +52,7 @@ public class TerapeutaController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/terapeutas")
+    @GetMapping
     public ResponseEntity<List<TerapeutaResponseDTO>> listarTodos() {
         List<TerapeutaResponseDTO> terapeutas = service.listarTerapeutas();
         return ResponseEntity.ok(terapeutas);

@@ -12,8 +12,7 @@ import com.br.mindeasy.model.Agenda;
 import com.br.mindeasy.model.Terapeuta;
 
 public interface AgendaRepository extends JpaRepository<Agenda, Long> {
-
-    Agenda findAgendaByTerapeutaId(Long idTerapeuta);
+    List<Agenda> findAllByTerapeutaId(Long terapeutaId);
 
     @Query("""
               SELECT DISTINCT a.terapeuta
@@ -33,5 +32,4 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
     List<Agenda> findDistinctByDiasIn(List<DiaAtendimento> dias);
 
     List<Agenda> findByDuracaoConsulta(Duration duracao);
-
 }

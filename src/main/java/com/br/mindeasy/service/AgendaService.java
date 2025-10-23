@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import com.br.mindeasy.dto.request.AgendaRequestDTO;
 import com.br.mindeasy.dto.response.AgendaResponseDTO;
@@ -17,8 +19,6 @@ import com.br.mindeasy.model.Agenda;
 import com.br.mindeasy.model.Terapeuta;
 import com.br.mindeasy.repository.AgendaRepository;
 import com.br.mindeasy.repository.TerapeutaRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class AgendaService {
@@ -46,7 +46,7 @@ public class AgendaService {
     private Agenda fromRequestDTO(AgendaRequestDTO dto, Agenda agendaExistente) {
         Terapeuta terapeuta = terapeutaRepository
                 .findById(dto.getIdTerapeuta())
-                .orElseThrow(() -> new EntityNotFoundException("Terapeuta não encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terapeuta não encontrado"));
 
         agendaExistente.setTerapeuta(terapeuta);
         agendaExistente.setHoraEntrada(dto.getHoraEntrada());
@@ -67,7 +67,7 @@ public class AgendaService {
     @Transactional(readOnly = true)
     public AgendaResponseDTO buscarPorId(Long id) {
         Agenda agenda = agendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agenda não encontrada"));
         return toResponseDTO(agenda);
     }
 
@@ -81,17 +81,17 @@ public class AgendaService {
 
     @Transactional(readOnly = true)
     public List<AgendaResponseDTO> listarPorTerapeuta(Long terapeutaId) {
-        Agenda agenda = agendaRepository.findAgendaByTerapeutaId(terapeutaId);
-        if (agenda == null) {
+        List<Agenda> agendas = agendaRepository.findAllByTerapeutaId(terapeutaId);
+        if (agendas == null || agendas.isEmpty()) {
             return Collections.emptyList();
         }
-        return List.of(toResponseDTO(agenda));
+        return agendas.stream().map(this::toResponseDTO).collect(Collectors.toList());
     }
 
     @Transactional
     public AgendaResponseDTO atualizarAgenda(Long id, AgendaRequestDTO dto) {
         Agenda existente = agendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agenda não encontrada"));
         fromRequestDTO(dto, existente);
         Agenda atualizado = agendaRepository.save(existente);
         return toResponseDTO(atualizado);
@@ -100,37 +100,60 @@ public class AgendaService {
     @Transactional
     public void deletarAgenda(Long id) {
         Agenda existente = agendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agenda não encontrada"));
         agendaRepository.delete(existente);
     }
 
     @Transactional
     public AgendaResponseDTO atualizarParcial(Long id, Map<String, Object> updates) {
         Agenda agenda = agendaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Agenda não encontrada"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agenda não encontrada"));
 
         if (updates.containsKey("horaEntrada")) {
-            String hora = updates.get("horaEntrada").toString();
-            agenda.setHoraEntrada(LocalTime.parse(hora));
+            try {
+                String hora = updates.get("horaEntrada").toString();
+                agenda.setHoraEntrada(LocalTime.parse(hora));
+            } catch (Exception ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "horaEntrada inválida");
+            }
         }
 
         if (updates.containsKey("horaSaida")) {
-            String hora = updates.get("horaSaida").toString();
-            agenda.setHoraSaida(LocalTime.parse(hora));
+            try {
+                String hora = updates.get("horaSaida").toString();
+                agenda.setHoraSaida(LocalTime.parse(hora));
+            } catch (Exception ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "horaSaida inválida");
+            }
         }
 
         if (updates.containsKey("duracaoConsulta")) {
-            Integer minutos = (Integer) updates.get("duracaoConsulta");
-            agenda.setDuracaoConsulta(Duration.ofMinutes(minutos));
+            try {
+                Object raw = updates.get("duracaoConsulta");
+                long minutos;
+                if (raw instanceof Number) {
+                    minutos = ((Number) raw).longValue();
+                } else {
+                    minutos = Long.parseLong(raw.toString());
+                }
+                agenda.setDuracaoConsulta(Duration.ofMinutes(minutos));
+            } catch (Exception ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duracaoConsulta inválida");
+            }
         }
 
         if (updates.containsKey("dias")) {
-            @SuppressWarnings("unchecked")
-            List<String> diasStr = (List<String>) updates.get("dias");
-            List<DiaAtendimento> dias = diasStr.stream()
-                    .map(DiaAtendimento::valueOf)
-                    .collect(Collectors.toList());
-            agenda.setDias(dias);
+            try {
+                @SuppressWarnings("unchecked")
+                List<String> diasStr = (List<String>) updates.get("dias");
+                List<DiaAtendimento> dias = diasStr.stream()
+                        .map(String::toUpperCase)
+                        .map(DiaAtendimento::valueOf)
+                        .collect(Collectors.toList());
+                agenda.setDias(dias);
+            } catch (Exception ex) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "dias inválidos");
+            }
         }
 
         Agenda salvo = agendaRepository.save(agenda);
@@ -156,11 +179,9 @@ public class AgendaService {
                 .collect(Collectors.toList());
         }
 
-        // Se nenhum filtro for enviado, retorna todos
         return agendaRepository.findAll()
             .stream()
             .map(this::toResponseDTO)
             .collect(Collectors.toList());
     }
-
 }
