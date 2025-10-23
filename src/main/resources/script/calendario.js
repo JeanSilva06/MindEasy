@@ -53,21 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
         feather.replace();
     }
 });
+
 // sidebar.js
 document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelector(".sidebar");
-  const handle = document.getElementById("sidebar-handle");
+    const sidebar = document.querySelector('.sidebar');
+    const handle = document.getElementById('sidebar-handle');
 
-  if (handle) {
-    handle.addEventListener("click", () => {
-      sidebar.classList.add("shown");
-    });
-  }
-
-  // Fecha a sidebar ao clicar fora (opcional)
-  document.addEventListener("click", (e) => {
-    if (!sidebar.contains(e.target) && !handle.contains(e.target)) {
-      sidebar.classList.remove("shown");
+    if (handle) {
+        handle.addEventListener('mouseenter', () => {
+            sidebar.classList.add('shown');
+        });
     }
-  });
+
+    sidebar.addEventListener('mouseleave', () => {
+        sidebar.classList.remove('shown');
+    });
 });
