@@ -10,6 +10,8 @@ import com.br.mindeasy.repository.AgendamentoRepository;
 import com.br.mindeasy.repository.PacienteRepository;
 import com.br.mindeasy.repository.TerapeutaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
