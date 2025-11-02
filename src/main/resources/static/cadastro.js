@@ -16,37 +16,13 @@ signInButton.addEventListener('click', () => {
     container.classList.remove("right-panel-active");
 });
 
-// === LÓGICA PARA ENVIO DO FORMULÁRIO DE CADASTRO ===
-formCadastro.addEventListener('submit', e => {
-    e.preventDefault(); // Impede o recarregamento da página
-    const data = {
-        nome: document.getElementById('nome').value,
-        sexo: document.getElementById('sexo').value,
-        especialidade: document.getElementById('especialidade').value,
-        crm: document.getElementById('crm').value,
-        email: document.getElementById('emailCadastro').value,
-        telefone: document.getElementById('telefone').value,
-        senha: document.getElementById('senhaCadastro').value
-    };
-
-    axios.post(`${BASE_URL}/terapeuta/cadastro`, data)
-      .then(res => {
-          alert('Terapeuta cadastrado com sucesso!');
-          console.log(res.data);
-      })
-      .catch(err => {
-          alert('Erro ao cadastrar terapeuta.');
-          console.error(err.response || err);
-      });
-});
-
 // === LÓGICA PARA ENVIO DO FORMULÁRIO DE LOGIN ===
 formLogin.addEventListener('submit', e => {
     e.preventDefault(); // Impede o recarregamento da página
     const email = document.getElementById('emailLogin').value;
     const senha = document.getElementById('senhaLogin').value;
 
-    axios.get(`${BASE_URL}/terapeuta/terapeutas`, {
+    axios.get(`${BASE_URL}/api/terapeutas`, {
         auth: { username: email, password: senha }
     })
       .then(res => {
@@ -60,6 +36,7 @@ formLogin.addEventListener('submit', e => {
           console.error(err.response || err);
       });
 });
+
 // === LÓGICA PARA ENVIO DO FORMULÁRIO DE CADASTRO ===
 formCadastro.addEventListener('submit', e => {
     e.preventDefault(); // Impede o recarregamento da página
@@ -88,7 +65,7 @@ formCadastro.addEventListener('submit', e => {
         }, 2000); // Reseta o botão após 2 segundos
     };
 
-    axios.post(`${BASE_URL}/terapeuta/cadastro`, data)
+    axios.post(`${BASE_URL}/api/terapeutas`, data)
       .then(res => {
           alert('Terapeuta cadastrado com sucesso!');
           console.log(res.data);
