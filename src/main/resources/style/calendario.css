@@ -286,3 +286,17 @@ body {
     color: #fff;
     border-radius: 50%;
 }
+.agendamento-card {
+  background: #e0f3ff;
+  border-left: 4px solid #007bff;
+  padding: 4px 6px;
+  margin-top: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.agendamento-card:hover {
+  background: #cce9ff;
+}
