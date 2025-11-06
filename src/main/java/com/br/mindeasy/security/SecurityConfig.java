@@ -1,5 +1,6 @@
 package com.br.mindeasy.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,12 +8,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -20,25 +26,25 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // Permite o cadastro (POST) e o login (POST)
+                .requestMatchers(HttpMethod.POST, "/api/terapeutas", "/api/pacientes", "/api/auth/login").permitAll()
+                
+                // Permite endpoints de documentação (Swagger)
                 .requestMatchers(
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/swagger-resources/**",
-                    "/api/pacientes/**",
-                    "/api/terapeutas/**",
-                    "/api/avaliacoes/**",
-                    "/api/agendamentos",
-                    "/api/agendamentos/**",
-                    "/api/agendas",
-                    "/api/agendas/**"
-                )
-                .permitAll()
+                    "/swagger-resources/**"
+                ).permitAll()
+
+                // Exige autenticação para todo o resto
                 .anyRequest().authenticated())
-            .headers(headers -> headers
-                .frameOptions(frame -> frame.disable()))
-            .httpBasic(Customizer.withDefaults());
+            
+            // Adiciona nosso filtro JWT
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            
+            // Diz ao Spring para NÃO guardar o login (stateless), pois usamos tokens
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
