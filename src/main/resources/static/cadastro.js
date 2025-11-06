@@ -16,20 +16,27 @@ signInButton.addEventListener('click', () => {
     container.classList.remove("right-panel-active");
 });
 
-// === LÓGICA PARA ENVIO DO FORMULÁRIO DE LOGIN ===
+// === LÓGICA PARA ENVIO DO FORMULÁRIO DE LOGIN (ATUALIZADO COM REDIRECIONAMENTO) ===
 formLogin.addEventListener('submit', e => {
     e.preventDefault(); // Impede o recarregamento da página
     const email = document.getElementById('emailLogin').value;
     const senha = document.getElementById('senhaLogin').value;
 
-    axios.get(`${BASE_URL}/api/terapeutas`, {
-        auth: { username: email, password: senha }
-    })
+    const loginData = {
+        username: email,
+        password: senha
+    };
+
+    // Faz um POST para o novo endpoint /api/auth/login
+    axios.post(`${BASE_URL}/api/auth/login`, loginData)
       .then(res => {
-          alert('Login realizado com sucesso!');
-          console.log(res.data);
-          // Redirecionar para outra página após o login
-          // Ex: window.location.href = 'dashboard.html';
+          // alert('Login realizado com sucesso!'); (Removido para agilizar)
+
+          // Guarda o token no navegador
+          localStorage.setItem('mindeasy_token', res.data.token);
+
+          // ADICIONADO: Redireciona o usuário para o menu principal
+          window.location.href = 'menu.html';
       })
       .catch(err => {
           alert('Credenciais inválidas.');
@@ -37,7 +44,7 @@ formLogin.addEventListener('submit', e => {
       });
 });
 
-// === LÓGICA PARA ENVIO DO FORMULÁRIO DE CADASTRO ===
+// === LÓGICA PARA ENVIO DO FORMULÁRIO DE CADASTRO (EXISTENTE) ===
 formCadastro.addEventListener('submit', e => {
     e.preventDefault(); // Impede o recarregamento da página
 
@@ -65,6 +72,7 @@ formCadastro.addEventListener('submit', e => {
         }, 2000); // Reseta o botão após 2 segundos
     };
 
+    // O endpoint de cadastro continua o mesmo (e não precisa de token)
     axios.post(`${BASE_URL}/api/terapeutas`, data)
       .then(res => {
           alert('Terapeuta cadastrado com sucesso!');

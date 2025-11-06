@@ -141,10 +141,25 @@
     }); 
 
     pacienteSelecionado = null;
-    // Busca os pacientes via API (exemplo)
+    // Busca os pacientes via API (AGORA COM AUTENTICAÇÃO)
     async function carregarPacientes() {
       try {
-        const response = await axios.get("http://localhost:8080/api/pacientes"); 
+        // 1. Pega o token que salvamos no login
+        const token = localStorage.getItem('mindeasy_token');
+
+        if (!token) {
+            alert("Você não está logado. Redirecionando para o login.");
+            window.location.href = 'cadastro.html'; // Manda de volta pro login
+            return;
+        }
+
+        // 2. Adiciona o token no cabeçalho da requisição
+        const response = await axios.get("http://localhost:8080/api/pacientes", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }); 
+        
         const pacientes = response.data;
         const lista = document.getElementById("contactsList");
 
@@ -159,14 +174,28 @@
             <img src="https://via.placeholder.com/40" alt="Paciente">
             <div class="contact-info">
               <h4>${p.nome}</h4>
-              <small>${p.status === "online" ? "Online" : "Offline"}</small>
+              <small>${p.status === "online" ? "Online" : "Offline"}</small> 
             </div>
           `;
+          // O "status" não existe no seu DTO, 
+          // então vamos simplificar a linha acima:
+          div.innerHTML = `
+            <img src="https://via.placeholder.com/40" alt="Paciente">
+            <div class="contact-info">
+              <h4>${p.nome}</h4>
+              <small>ID: ${p.id}</small>
+            </div>
+          `;
+
 
           lista.appendChild(div);
         });
       } catch (error) {
           console.error("Erro ao carregar pacientes:", error);
+          if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+              alert("Sua sessão expirou. Faça o login novamente.");
+              window.location.href = 'cadastro.html';
+          }
         }
   }
 
