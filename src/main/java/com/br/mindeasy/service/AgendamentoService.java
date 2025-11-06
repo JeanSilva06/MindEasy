@@ -119,6 +119,9 @@ public class AgendamentoService {
         agendamento.setTerapeuta(terapeuta);
         agendamento.setData(dto.getData());
         agendamento.setHoraInicio(dto.getHoraInicio());
+        if (dto.getStatus() != null) {
+            agendamento.setStatus(dto.getStatus());
+        }
 
         agendamentoRepository.save(agendamento);
 
@@ -140,6 +143,9 @@ public class AgendamentoService {
             Terapeuta terapeuta = terapeutaRepository.findById(dto.getTerapeutaId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Terapeuta não encontrado"));
             agendamento.setTerapeuta(terapeuta);
+        }
+        if (dto.getStatus() != null) {
+            agendamento.setStatus(dto.getStatus());
         }
 
         agendamentoRepository.save(agendamento);
