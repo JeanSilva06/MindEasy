@@ -26,10 +26,12 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+
                 // Permite o cadastro (POST) e o login (POST)
                 .requestMatchers(HttpMethod.POST, "/api/terapeutas", "/api/pacientes", "/api/auth/login").permitAll()
                 
                 // Permite endpoints de documentação (Swagger)
+
                 .requestMatchers(
                     "/swagger-ui.html",
                     "/swagger-ui/**",
