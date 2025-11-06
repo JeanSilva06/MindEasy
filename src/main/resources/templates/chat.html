@@ -1,19 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Chat – MindEasy</title>
 
-  <!-- Ícones do Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Estilo externo -->
   <link rel="stylesheet" href="../style/chat.css">
 </head>
 <body>
 
-  <!-- ===== SIDEBAR (Menu lateral fixo) ===== -->
   <div class="sidebar" id="sidebar">
     <div class="brand">MindEasy</div>
     <ul>
@@ -25,7 +21,6 @@
       <li><a href="videoChamada.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
     </ul>
 
-    <!-- Botão de sair -->
     <div class="logout">
       <a class="d-block text-center text-danger fw-bold" href="index.html">
         <i class="fa-solid fa-right-from-bracket"></i> Sair
@@ -35,14 +30,11 @@
 
   <div id="sidebar-handle">&#x25B6;</div> 
 
-  <!-- ===== CONTAINER PRINCIPAL (Sidebar + Lista de contatos + Chat) ===== -->
   <div class="main-container">
 
-    <!-- Lista de contatos -->
     <div class="contacts-list">
       <div class="contacts-header">Contatos</div>
 
-      <!-- Contato 1 -->
       <div class="contact">
         <img src="https://via.placeholder.com/40" alt="Cliente">
         <div class="contact-info">
@@ -51,7 +43,6 @@
         </div>
       </div>
 
-      <!-- Contato 2 -->
       <div class="contact">
         <img src="https://via.placeholder.com/40" alt="Cliente">
         <div class="contact-info">
@@ -61,10 +52,8 @@
       </div>
     </div>
 
-    <!-- ===== ÁREA DO CHAT ===== -->
     <div class="chat-container">
 
-      <!-- Cabeçalho do chat -->
       <div class="chat-header">
         <div class="chat-user">
           <img src="https://via.placeholder.com/40" alt="Cliente">
@@ -80,7 +69,6 @@
         </div>
       </div>
 
-      <!-- Corpo do chat -->
       <div class="chat-body" id="chatBody">
         <div class="message received">
           <p>Olá, doutor!</p>
@@ -92,7 +80,6 @@
         </div>
       </div>
 
-      <!-- Campo de envio de mensagem -->
       <div class="chat-footer">
         <input type="text" id="messageInput" placeholder="Digite sua mensagem...">
         <button id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
@@ -100,9 +87,7 @@
     </div>
   </div>
 
-  <!-- ===== SCRIPT DO CHAT ===== -->
- <!-- ===== SCRIPT DO CHAT ===== -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   const API_URL = "http://localhost:5000/mensagens"; // altere para o endpoint real da sua API
 
@@ -121,10 +106,20 @@
     chatBody.appendChild(div);
   }
 
-  // ===== Função para carregar mensagens da API =====
+  // ===== Função para carregar mensagens da API (ATUALIZADA) =====
   async function carregarMensagens() {
     try {
-      const response = await axios.get(API_URL);
+      const token = localStorage.getItem('mindeasy_token');
+      if (!token) {
+        console.warn("Token não encontrado, aguardando login.");
+        return; // Não tenta carregar se não houver token
+      }
+
+      // Adiciona o token no cabeçalho da requisição
+      const response = await axios.get(API_URL, {
+          headers: { 'Authorization': `Bearer ${token}` }
+      });
+
       chatBody.innerHTML = ""; // limpa o chat
       response.data.forEach(msg => {
         renderMessage(msg, msg.remetente === "terapeuta" ? "sent" : "received");
@@ -132,13 +127,26 @@
       chatBody.scrollTop = chatBody.scrollHeight;
     } catch (error) {
       console.error("Erro ao buscar mensagens:", error);
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          // Se a sessão expirar, para de tentar carregar e manda pro login
+          clearInterval(chatInterval); // Para o timer
+          alert("Sua sessão expirou. Faça o login novamente.");
+          window.location.href = 'cadastro.html';
+      }
     }
   }
 
-  // ===== Enviar nova mensagem =====
+  // ===== Enviar nova mensagem (ATUALIZADA) =====
   async function enviarMensagem() {
     const texto = input.value.trim();
     if (!texto) return;
+
+    const token = localStorage.getItem('mindeasy_token');
+    if (!token) {
+        alert("Você não está logado. Faça o login para enviar mensagens.");
+        window.location.href = 'cadastro.html';
+        return;
+    }
 
     const novaMensagem = {
       remetente: "terapeuta", // pode ser 'cliente' dependendo do usuário logado
@@ -147,12 +155,20 @@
     };
 
     try {
-      await axios.post(API_URL, novaMensagem);
+      // Adiciona o token no cabeçalho da requisição
+      await axios.post(API_URL, novaMensagem, {
+          headers: { 'Authorization': `Bearer ${token}` }
+      });
+
       renderMessage(novaMensagem, "sent");
       input.value = "";
       chatBody.scrollTop = chatBody.scrollHeight;
     } catch (error) {
       console.error("Erro ao enviar mensagem:", error);
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          alert("Sua sessão expirou. Faça o login novamente.");
+          window.location.href = 'cadastro.html';
+      }
     }
   }
 
@@ -163,10 +179,10 @@
   });
 
   // ===== Atualiza o chat automaticamente =====
-  setInterval(carregarMensagens, 5000); // atualiza a cada 5 segundos
+  // (Guardamos o intervalo para poder pará-lo se a sessão expirar)
+  const chatInterval = setInterval(carregarMensagens, 5000); 
   carregarMensagens(); // carrega assim que entra
 </script>
 <script src="../static/menu.js"></script>
 </body>
 </html>
-

@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Dashboard – MindEasy</title>
   <link rel="stylesheet" href="../style/dashboard.css">
-  <!-- Ícones do Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 
-  <!-- ===== SIDEBAR (Menu lateral fixo) ===== -->
   <div class="sidebar" id="sidebar">
     <div class="brand">MindEasy</div>
     <ul>
@@ -19,10 +17,9 @@
       <li><a href="perfilTerapeuta.html"><i class="fa-solid fa-user-doctor"></i> Terapeuta</a></li>
       <li><a href="menu.html"><i class="fa-regular fa-star"></i> Serviços</a></li>
       <li><a href="chat.html"><i class="fa-regular fa-comment"></i> Chat</a></li>
-      <li><a href="terapeuta-video.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
+      <li><a href="videoChamada.html"><i class="fa-solid fa-video"></i> Videochamada</a></li>
     </ul>
 
-    <!-- Botão de sair -->
     <div class="logout">
       <a class="d-block text-center text-danger fw-bold" href="index.html">
         <i class="fa-solid fa-right-from-bracket"></i> Sair
@@ -32,7 +29,6 @@
 
   <div id="sidebar-handle">&#x25B6;</div>
 
-  <!-- ===== CONTAINER PRINCIPAL (Sidebar + Lista de contatos + Chat) ===== -->
   <div class="main-container">
     <div class="wrap">
     <div class="card">
@@ -40,14 +36,12 @@
         <svg id="chart" class="chart" viewBox="0 0 900 320" preserveAspectRatio="none" aria-labelledby="title desc" role="img">
         <title id="title">Gráfico de barras – atendimentos</title>
         <desc id="desc">Barras mensais de atendimentos com eixo X e linhas guias horizontais</desc>
-        <!-- gradient p/ barras -->
         <defs>
             <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0" stop-color="#34d399"/>
             <stop offset="1" stop-color="#10b981"/>
             </linearGradient>
         </defs>
-        <!-- grupo para eixos/grades/barras -->
         <g id="plot"></g>
         </svg>
     </div>
@@ -56,78 +50,150 @@
 <script src="../static/menu.js"></script>
 
 <script>
-    // Dados (poderia vir do backend)
-const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-const valores = [30, 35, 42, 45, 25, 50, 41, 38, 44, 46, 39, 48]; // total de atendimentos
+    // Envolve tudo em um evento DOMContentLoaded para garantir que a página carregou
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // Coloca a lógica do gráfico dentro de uma função para ser chamada *depois* de buscar os dados
+        function renderizarGrafico(valores) {
+            const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']; // 12 meses
 
-// Dimensões do "mundo" do gráfico (casam com o viewBox)
-const W = 900, H = 320;
-const m = {top:20, right:30, bottom:40, left:50}; // margens internas
-const plotW = W - m.left - m.right;
-const plotH = H - m.top - m.bottom;
+            // Dimensões do "mundo" do gráfico (casam com o viewBox)
+            const W = 900, H = 320;
+            const m = {top:20, right:30, bottom:40, left:50}; // margens internas
+            const plotW = W - m.left - m.right;
+            const plotH = H - m.top - m.bottom;
 
-const max = Math.max(...valores);
-// arredonda topo para uma grade bonita (ex.: múltiplos de 10)
-const niceMax = Math.ceil(max / 10) * 10;
+            // Encontra o valor máximo dos dados recebidos
+            const max = Math.max(...valores);
+            // arredonda topo para uma grade bonita (ex.: múltiplos de 10)
+            // Garante que o valor máximo seja pelo menos 10 (para o gráfico não ficar vazio se for 0)
+            const niceMax = Math.ceil(Math.max(max, 10) / 10) * 10; 
 
-// escalas (valor -> pixel)
-const xStep = plotW / valores.length;
-const barWidth = xStep * 0.6;
-const x = i => m.left + i * xStep + (xStep - barWidth)/2;
-const y = v => m.top + plotH - (v / niceMax) * plotH;
+            // escalas (valor -> pixel)
+            const xStep = plotW / valores.length;
+            const barWidth = xStep * 0.6;
+            const x = i => m.left + i * xStep + (xStep - barWidth)/2;
+            const y = v => m.top + plotH - (v / niceMax) * plotH;
 
-const plot = document.getElementById('plot');
+            const plot = document.getElementById('plot');
+            plot.innerHTML = ''; // Limpa o gráfico antigo (caso precise recarregar)
 
-// grid horizontal + ticks
-const linhas = 5; // 5 linhas guias
-for (let i = 0; i <= linhas; i++){
-    const val = (niceMax/linhas) * i;
-    const yPos = m.top + plotH - (val / niceMax) * plotH;
+            // grid horizontal + ticks
+            const linhas = 5; // 5 linhas guias
+            for (let i = 0; i <= linhas; i++){
+                const val = (niceMax/linhas) * i;
+                const yPos = m.top + plotH - (val / niceMax) * plotH;
 
-    // linha guia
-    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1', m.left);
-    line.setAttribute('x2', m.left + plotW);
-    line.setAttribute('y1', yPos);
-    line.setAttribute('y2', yPos);
-    line.setAttribute('class','axis');
-    plot.appendChild(line);
+                // linha guia
+                const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+                line.setAttribute('x1', m.left);
+                line.setAttribute('x2', m.left + plotW);
+                line.setAttribute('y1', yPos);
+                line.setAttribute('y2', yPos);
+                line.setAttribute('class','axis');
+                plot.appendChild(line);
 
-    // rótulo do eixo Y
-    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x', m.left - 8);
-    t.setAttribute('y', yPos + 4);
-    t.setAttribute('class','tickLabel');
-    t.textContent = val;
-    plot.appendChild(t);
-}
+                // rótulo do eixo Y
+                const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+                t.setAttribute('x', m.left - 8);
+                t.setAttribute('y', yPos + 4);
+                t.setAttribute('class','tickLabel');
+                t.textContent = val;
+                plot.appendChild(t);
+            }
 
-// eixo Y (linha vertical)
-const yAxis = document.createElementNS('http://www.w3.org/2000/svg','line');
-yAxis.setAttribute('x1', m.left);
-yAxis.setAttribute('x2', m.left);
-yAxis.setAttribute('y1', m.top);
-yAxis.setAttribute('y2', m.top + plotH);
-yAxis.setAttribute('class','axis');
-plot.appendChild(yAxis);
+            // eixo Y (linha vertical)
+            const yAxis = document.createElementNS('http://www.w3.org/2000/svg','line');
+            yAxis.setAttribute('x1', m.left);
+            yAxis.setAttribute('x2', m.left);
+            yAxis.setAttribute('y1', m.top);
+            yAxis.setAttribute('y2', m.top + plotH);
+            yAxis.setAttribute('class','axis');
+            plot.appendChild(yAxis);
 
-// barras + rótulos X
-valores.forEach((v, i) => {
-    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('x', x(i));
-    rect.setAttribute('y', y(v));
-    rect.setAttribute('width', barWidth);
-    rect.setAttribute('height', m.top + plotH - y(v));
-    rect.setAttribute('rx', 8);
-    rect.setAttribute('class','bar');
-    rect.setAttribute('aria-label', `${meses[i]}: ${v}`);
-    plot.appendChild(rect);
+            // barras + rótulos X
+            valores.forEach((v, i) => {
+                const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+                rect.setAttribute('x', x(i));
+                rect.setAttribute('y', y(v));
+                rect.setAttribute('width', barWidth);
+                rect.setAttribute('height', m.top + plotH - y(v));
+                rect.setAttribute('rx', 8);
+                rect.setAttribute('class','bar');
+                rect.setAttribute('aria-label', `${meses[i]}: ${v}`);
+                plot.appendChild(rect);
 
-    const lab = document.createElementNS('http://www.w3.org/2000/svg','text');
-    lab.setAttribute('x', m.left + i * xStep + xStep/2);
-    lab.setAttribute('y', m.top + plotH + 18);
-    lab.setAttribute('class','label');
-    lab.textContent = meses[i];
-    plot.appendChild(lab);
-});
+                const lab = document.createElementNS('http://www.w3.org/2000/svg','text');
+                lab.setAttribute('x', m.left + i * xStep + xStep/2);
+                lab.setAttribute('y', m.top + plotH + 18);
+                lab.setAttribute('class','label');
+                lab.textContent = meses[i];
+                plot.appendChild(lab);
+            });
+        }
+
+
+        // === NOVA LÓGICA DE AUTENTICAÇÃO E FETCH ===
+        
+        const BASE_URL = 'http://localhost:8080';
+        
+        // Função principal para carregar os dados do dashboard
+        async function carregarDashboard() {
+            const token = localStorage.getItem('mindeasy_token');
+
+            if (!token) {
+                alert("Você não está logado. Redirecionando para o login.");
+                window.location.href = 'cadastro.html';
+                return;
+            }
+            
+            // ID do terapeuta (hardcoded para 1) e Ano (hardcoded para 2025)
+            // No futuro, você precisará de uma forma de obter o ID do terapeuta logado
+            const terapeutaId = 1; 
+            const ano = 2025; // Usando 2025 com base no calendario.js
+
+            const valoresMensais = [];
+            const meses = Array.from({length: 12}, (_, i) => i + 1); // [1, 2, 3, ... 12]
+
+            try {
+                // Mostra um gráfico "carregando" (com 0s) enquanto busca os dados
+                renderizarGrafico(Array(12).fill(0));
+
+                // Cria um array de promessas (12 chamadas de API)
+                const requests = meses.map(mes => {
+                    return axios.get(`${BASE_URL}/api/agendamentos/terapeutas/${terapeutaId}/concluidos`, {
+                        params: { mes: mes, ano: ano },
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                });
+
+                // Espera todas as 12 chamadas terminarem
+                const responses = await Promise.all(requests);
+
+                // Extrai o dado (número) de cada resposta
+                responses.forEach(res => {
+                    valoresMensais.push(res.data); // res.data é o 'long' (número)
+                });
+
+                // Agora que temos os dados, renderiza o gráfico
+                renderizarGrafico(valoresMensais);
+
+            } catch (error) {
+                console.error("Erro ao carregar dados do dashboard:", error);
+                if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+                    alert("Sua sessão expirou. Faça o login novamente.");
+                    window.location.href = 'cadastro.html';
+                } else {
+                    // Se falhar (ex: terapeutaId=1 não existe), carrega o gráfico com zeros
+                    alert("Erro ao carregar dados do gráfico. Verifique o console.");
+                    renderizarGrafico(Array(12).fill(0));
+                }
+            }
+        }
+
+        // Inicia o carregamento do dashboard
+        carregarDashboard();
+    });
 </script>
+</body>
+</html>
