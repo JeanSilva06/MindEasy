@@ -178,7 +178,7 @@ public class AgendamentoService {
 
         return agendamentoRepository.countByTerapeutaIdAndStatusAndDataBetween(
             terapeutaId,
-            StatusAgendamento.AGENDADO,
+            StatusAgendamento.REALIZADO,
             inicio,
             fim
         );
