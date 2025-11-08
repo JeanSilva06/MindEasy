@@ -38,10 +38,16 @@
       
       <!-- Cabeçalho do Perfil -->
       <div class="card profile-header">
-        <img src="https://placehold.co/120x120/cccccc/ffffff?text=User" alt="Foto do Terapeuta" class="profile-pic">
+        <img src="https://placehold.co/120x120/cccccc/ffffff?text=User" alt="Foto do Terapeuta" class="profile-pic" id="Foto do Terapeuta">
         <div class="profile-info">
-          <h1>Nome do Terapeuta</h1>
-          <p>Descrição breve do perfil</p>
+          <h1 id="terapeuta-nome">Nome do Terapeuta</h1>
+          <p id="terapeuta-descriao">Descrição breve do perfil</p>
+
+          <!--Nota média -->
+          <div id="rating" style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+            <div id="stars" aria-label="Avaliação média"></div>
+            <span id="rating-text" style="font-weight:600; color:#333;">–</span>
+          </div>
         </div>
         <div class="profile-actions">
          <a href="chat.html" class="btn-custom btn-primary-custom">Enviar Mensagem</a>
@@ -52,10 +58,10 @@
       <!-- Detalhes do Perfil -->
       <div class="card profile-details">
         <h2>Sobre Mim</h2>
-        <p>Placeholder de descrição detalhada. Adicione informações sobre o terapeuta aqui.</p>
+        <p id="sobre-mim">Placeholder de descrição detalhada. Adicione informações sobre o terapeuta aqui.</p>
 
         <h2 class="mt-4">Especialidades</h2>
-        <div class="specialties">
+        <div class="specialties" id="especialidades">
           <span class="badge">Placeholder</span>
         </div>
       </div>
@@ -63,7 +69,8 @@
     </div>
   </div>
 
-  <script src="../script/perfilTerapeuta.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="../script/perfilTerapeuta.js"></script>
 </body>
 </html>

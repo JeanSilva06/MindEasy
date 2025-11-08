@@ -30,12 +30,17 @@ public class SecurityConfig {
                 // Permite o cadastro (POST) e o login (POST)
                 .requestMatchers(HttpMethod.POST, "/api/terapeutas", "/api/pacientes", "/api/auth/login").permitAll()
                 
+                //Permite OPTIONS
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                 // Permite endpoints de documentação (Swagger)
 
                 .requestMatchers(
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
+                    "/api/auth/**",
+                    "/error",
                     "/swagger-resources/**"
                 ).permitAll()
 
