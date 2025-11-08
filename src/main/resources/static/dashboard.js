@@ -1,5 +1,5 @@
 // =======================
-// Dashboard – MindEasy
+// Dashboard – MindEasy (CORRIGIDO COM AUTENTICAÇÃO)
 // =======================
 
 // === CONFIG ===
@@ -14,16 +14,21 @@ const mesesPt = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','No
 const nomeMes = (m) => mesesPt[m - 1];
 
 // Chama: GET /api/agendamentos/terapeutas/{id}/concluidos?mes=..&ano=..
-// (no back, "concluidos" já conta StatusAgendamento.REALIZADO)
-async function getRealizadosMes(terapeutaId, mes, ano) {
+async function getRealizadosMes(terapeutaId, mes, ano, token) {
   const url = `${BASE_URL}/api/agendamentos/terapeutas/${terapeutaId}/concluidos`;
-  const { data } = await axios.get(url, { params: { mes, ano } });
+  
+  // ADICIONADO: Envia o token no cabeçalho
+  const { data } = await axios.get(url, { 
+      params: { mes, ano },
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
   return Number(data) || 0;
 }
 
 // Calcula série de 12 meses do ano atual
-async function getSerieAnual(terapeutaId, ano) {
-  const chamadas = Array.from({ length: 12 }, (_, i) => getRealizadosMes(terapeutaId, i + 1, ano));
+async function getSerieAnual(terapeutaId, ano, token) {
+  // ADICIONADO: Passa o token para a função
+  const chamadas = Array.from({ length: 12 }, (_, i) => getRealizadosMes(terapeutaId, i + 1, ano, token));
   return Promise.all(chamadas); // [jan..dez]
 }
 
@@ -115,22 +120,36 @@ function renderGraficoMensalSVG(svgId, data) {
 
 // Carrega tudo do dashboard
 async function carregarDashboard() {
+  // ADICIONADO: Pega o token
+  const token = localStorage.getItem('mindeasy_token');
+  if (!token) {
+      alert("Você não está logado. Redirecionando para o login.");
+      window.location.href = 'cadastro.html';
+      return;
+  }
+
   const hoje = new Date();
   const anoAtual = hoje.getFullYear();
   const mesAtual = hoje.getMonth() + 1;
 
-  // KPI do mês atual
-  const totalMes = await getRealizadosMes(TERAPEUTA_ID, mesAtual, anoAtual);
+  try {
+    // ADICIONADO: Passa o token
+    const totalMes = await getRealizadosMes(TERAPEUTA_ID, mesAtual, anoAtual, token);
+    const serie = await getSerieAnual(TERAPEUTA_ID, anoAtual, token);
+    const totalAno = serie.reduce((acc, v) => acc + Number(v || 0), 0);
 
-  // Série anual (12 chamadas)
-  const serie = await getSerieAnual(TERAPEUTA_ID, anoAtual);
-
-  // KPI do ano
-  const totalAno = serie.reduce((acc, v) => acc + Number(v || 0), 0);
-
-  // Atualiza UI
-  atualizarKPIs({ totalMes, mesAtual, anoAtual, totalAno });
-  renderGraficoMensalSVG('chart-mensal', serie);
+    atualizarKPIs({ totalMes, mesAtual, anoAtual, totalAno });
+    renderGraficoMensalSVG('chart-mensal', serie);
+  
+  } catch(err) {
+      console.error('[Dashboard] Falha ao carregar:', err);
+      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          alert("Sua sessão expirou. Faça o login novamente.");
+          window.location.href = 'cadastro.html';
+      } else {
+          alert('Falha ao carregar dados do dashboard.');
+      }
+  }
 }
 
 // Boot
@@ -141,8 +160,5 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  carregarDashboard().catch(err => {
-    console.error('[Dashboard] Falha ao carregar:', err);
-    alert('Falha ao carregar dados do dashboard.');
-  });
+  carregarDashboard();
 });
