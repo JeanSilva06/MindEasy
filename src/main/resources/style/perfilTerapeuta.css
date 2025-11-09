@@ -1,3 +1,13 @@
+:root {
+    --bg-color: #FFFFFF;
+    --border-color: #EAECF0;
+    --text-color-primary: #101828;
+    --text-color-secondary: #475467;
+    --text-color-light: #667085;
+    --primary-color: #003cff;
+    --primary-color-hover: #003cff;
+    --font-family: 'Inter', sans-serif;
+}
 
 .sidebar {
     width: 240px;
@@ -129,11 +139,12 @@
     border-radius: 8px;
     border: none;
     transition: transform 0.2s;
+    text-decoration: none;
 }
 
 .btn-primary-custom {
-    background: linear-gradient(to right, #5FB6D9, #94D7F2);
-    color: #fff;
+    background: var(--primary-color);
+    color: #000000;
 }
 
 .btn-secondary-custom {
