@@ -32,12 +32,11 @@
   <div id="sidebar-handle">&#x25B6;</div> 
 
   <div class="main-container">
-
     <div class="contacts-list">
       <div class="contacts-header">Contatos</div>
 
       <div class="contact">
-        <img src="https://via.placeholder.com/40" alt="Cliente">
+        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Cliente">
         <div class="contact-info">
           <h4>João Silva</h4>
           <small>online</small>
@@ -45,13 +44,14 @@
       </div>
 
       <div class="contact">
-        <img src="https://via.placeholder.com/40" alt="Cliente">
+        <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Cliente">
         <div class="contact-info">
           <h4>Maria Oliveira</h4>
           <small>visto por último 09:30</small>
         </div>
       </div>
     </div>
+
 
     <div class="chat-container">
 
@@ -64,9 +64,8 @@
           </div>
         </div>
         <div class="chat-actions">
-          <i class="fa-solid fa-video"></i>
-          <i class="fa-solid fa-phone"></i>
-          <i class="fa-solid fa-ellipsis-vertical"></i>
+          <i class="fa-solid fa-video" onclick="window.location.href='videoChamada.html'"></i>
+          <i class="fa-solid fa-phone" onclick="window.location.href='videoChamada.html'"></i>
         </div>
       </div>
 
@@ -95,6 +94,7 @@
   const sendBtn = document.getElementById("sendBtn");
   const input = document.getElementById("messageInput");
   const chatBody = document.getElementById("chatBody");
+  const chatHeaderImg = document.querySelector(".chat-user img");
 
   // ===== Função para exibir mensagens no chat =====
   function renderMessage(msg, type) {
@@ -183,6 +183,9 @@
   // (Guardamos o intervalo para poder pará-lo se a sessão expirar)
   const chatInterval = setInterval(carregarMensagens, 5000); 
   carregarMensagens(); // carrega assim que entra
+
+
+  
 </script>
 <script src="../static/menu.js"></script>
 </body>
