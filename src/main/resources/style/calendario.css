@@ -482,3 +482,74 @@ body {
   box-shadow: none;
   cursor: default;
 }
+.calendar-day {
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px;
+  min-height: 90px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eee;
+  transition: 0.2s;
+  position: relative;
+}
+
+.calendar-day:hover {
+  transform: scale(1.02);
+  border-color: #bbb;
+}
+
+.day-tasks {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.task-badge {
+  background: #f0f0f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+
+.modal-content {
+  background: #fff;
+  width: 400px;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+#close-modal {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.task-card {
+  background: #ececec;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.task-card button {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #d11;
+}
